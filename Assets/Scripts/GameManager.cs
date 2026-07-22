@@ -46,7 +46,7 @@ namespace Game
             {
                 var item = GenerateItem();
 
-                _director.Play(_anim_in);
+                _director.Play(_animIn);
 
                 await UniTask.Delay(TimeSpan.FromSeconds(waitSeconds), cancellationToken: ct);
 
@@ -56,11 +56,11 @@ namespace Game
                 Debug.Log($"{shouldDestroy}, {match}");
                 if (shouldDestroy)
                 {
-                    _director.Play(_anim_smash);
+                    _director.Play(_animSmash);
                 }
                 else
                 {
-                    _director.Play(_anim_pass);
+                    _director.Play(_animPass);
                 }
                 // if (userChoice == match)
                 // {

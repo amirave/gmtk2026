@@ -19,7 +19,7 @@ namespace Game
 
         public void Compose() { }
 
-        public bool Match(Property other)
+        public override bool Match(Property other)
         {
             if (other.GetType() != typeof(ShapeProperty)) return false;
             

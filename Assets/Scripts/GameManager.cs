@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
+using Object = UnityEngine.Object;
 
 namespace Game
 {
@@ -13,12 +16,22 @@ namespace Game
         [SerializeField] private List<Item> _itemPrefabs;
         [SerializeField] private List<Rule> _rules;
 
+        [SerializeField] private PlayableDirector _director;
+        [SerializeField] private TimelineAsset _animIn;
+        [SerializeField] private TimelineAsset _animSmash;
+        [SerializeField] private TimelineAsset _animPass;
+        [SerializeField] private Transform _itemParent;
+
         private CancellationTokenSource _cts;
 
         void Start()
         {
+            _rules = new List<Rule>() { new Rule() };
+            var prop = new ColorProperty();
+            prop.possibleValues = new List<ColorType>() { ColorType.RED };
+            _rules[0].property = prop;
             _cts = new CancellationTokenSource();
-            RunForeverAsync(2f, _cts.Token).Forget();
+            GameLoop(2f, _cts.Token).Forget();
         }
 
         void OnDestroy()
@@ -27,11 +40,13 @@ namespace Game
             _cts?.Dispose();
         }
 
-        public async UniTaskVoid RunForeverAsync(float waitSeconds, CancellationToken ct)
+        public async UniTaskVoid GameLoop(float waitSeconds, CancellationToken ct)
         {
             while (true)
             {
                 var item = GenerateItem();
+
+                _director.Play(_anim_in);
 
                 await UniTask.Delay(TimeSpan.FromSeconds(waitSeconds), cancellationToken: ct);
 
@@ -39,6 +54,14 @@ namespace Game
                 var match = DoesMatchRule(item);
 
                 Debug.Log($"{shouldDestroy}, {match}");
+                if (shouldDestroy)
+                {
+                    _director.Play(_anim_smash);
+                }
+                else
+                {
+                    _director.Play(_anim_pass);
+                }
                 // if (userChoice == match)
                 // {
                 //     Debug.Log("CORRECT!!");
@@ -48,9 +71,9 @@ namespace Game
                 //     Debug.Log("WRONGG");
                 // }
 
-                Destroy(item.gameObject);
-
                 await UniTask.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken: ct);
+                
+                Destroy(item.gameObject);
 
                 if (ct.IsCancellationRequested)
                     return;
@@ -60,7 +83,7 @@ namespace Game
         Item GenerateItem()
         {
             var itemPrefab = _itemPrefabs.PickRandom();
-            return Instantiate(itemPrefab, transform);
+            return Instantiate(itemPrefab, _itemParent);
         }
 
         bool DoesMatchRule(Item item)

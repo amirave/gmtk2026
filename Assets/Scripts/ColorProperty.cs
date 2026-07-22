@@ -14,7 +14,7 @@ namespace Game
     [Serializable]
     public class ColorProperty : Property, IProperty
     {
-        [SerializeField] private List<ColorType> possibleValues;
+        [SerializeField] public List<ColorType> possibleValues;
         [SerializeField] private SpriteRenderer target;
 
         public new void Compose()
@@ -33,7 +33,7 @@ namespace Game
             }
         }
 
-        public bool Match(Property other)
+        public override bool Match(Property other)
         {
             if (other.GetType() != typeof(ColorProperty)) return false;
             

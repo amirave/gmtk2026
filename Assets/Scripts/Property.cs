@@ -19,7 +19,7 @@ namespace Game
 
         public void Compose() { }
         public void Pick(List<Property> restrictions) { }
-        public bool Match(Property other)
+        public virtual bool Match(Property other)
         {
             throw new NotImplementedException();
         }

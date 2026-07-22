@@ -18,5 +18,13 @@ namespace Game
         [SerializeField] public Sprite Sprite;
 
         public void Compose() { }
+
+        public bool Match(Property other)
+        {
+            if (other.GetType() != typeof(ShapeProperty)) return false;
+            
+            var otherShape = (ShapeProperty)other;
+            return Shape == otherShape.Shape;
+        }
     }
 }

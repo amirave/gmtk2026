@@ -7,6 +7,8 @@ namespace Game
     public interface IProperty
     {
         public void Compose();
+        public void Pick(List<Property> restrictions);
+        public bool Match(Property other);
     }
     
     [Serializable]
@@ -15,10 +17,11 @@ namespace Game
         [SerializeField] public bool isComposable;
         [NonSerialized] public object Chosen;
 
-        public void Compose()
+        public void Compose() { }
+        public void Pick(List<Property> restrictions) { }
+        public bool Match(Property other)
         {
             throw new NotImplementedException();
         }
     }
-    
 }

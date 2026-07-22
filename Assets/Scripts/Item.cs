@@ -6,6 +6,16 @@ namespace Game
 {
     public class Item : MonoBehaviour
     {
-        [SerializeReference] private List<Property> properties = new();
+        [SerializeReference] public List<Property> properties = new();
+
+        public bool MatchProperty(Property property)
+        {
+            foreach (var currentProperty in properties)
+            {
+                if (currentProperty.Match(property)) return true;
+            }
+
+            return false;
+        }
     }
 }

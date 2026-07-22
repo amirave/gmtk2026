@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Game
@@ -18,6 +19,11 @@ namespace Game
             }
 
             return false;
+        }
+        
+        public bool PossibleMatchProperty(Property property)
+        {
+            return properties.Any(currentProperty => currentProperty.PossibleMatch(property));
         }
     }
 }

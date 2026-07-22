@@ -148,10 +148,9 @@ MonoBehaviour:
       data:
         isComposable: 0
         possibleValues: 02000000
-        target: {fileID: 0}
+        target: {fileID: 2355808143031203652}
     - rid: 1712479982808727631
       type: {class: ShapeProperty, ns: Game, asm: Assembly-CSharp}
       data:
         isComposable: 0
         Shape: 2
-        Sprite: {fileID: 0}

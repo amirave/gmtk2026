@@ -1,6 +1,6 @@
 using System;
+
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Game
 {
@@ -15,16 +15,25 @@ namespace Game
     public class ShapeProperty : Property, IProperty
     {
         [SerializeField] public ShapeType Shape;
-        [SerializeField] public Sprite Sprite;
 
-        public void Compose() { }
-
-        public override bool Match(Property other)
+        public ShapeProperty()
         {
-            if (other.GetType() != typeof(ShapeProperty)) return false;
-            
-            var otherShape = (ShapeProperty)other;
-            return Shape == otherShape.Shape;
+            isComposable = false;
+        }
+
+        public override void Compose()
+        {
+            Chosen = Shape.ToString();
+        }
+        public override void ComposeDefault()
+        {
+            Compose();
+        }
+
+        public override void Render() { }
+        public override bool PossibleMatch(Property other)
+        {
+            return (other as ShapeProperty)?.Shape == Shape;
         }
     }
 }

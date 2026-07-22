@@ -33,7 +33,7 @@ namespace Game
             }
         }
 
-        public override bool Match(Property other)
+        public bool Match(Property other)
         {
             if (other.GetType() != typeof(ColorProperty)) return false;
             

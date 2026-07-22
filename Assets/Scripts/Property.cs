@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Property
+namespace Game
 {
     public interface IProperty
     {

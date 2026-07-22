@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Property
+namespace Game
 {
     [CustomPropertyDrawer(typeof(Property), true)]
     public class PropertyPropertyDrawer : PropertyDrawer

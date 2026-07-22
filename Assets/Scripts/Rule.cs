@@ -1,4 +1,4 @@
-namespace Rule
+namespace Game
 {
     public enum RuleConcatinator
     {
@@ -7,7 +7,7 @@ namespace Rule
         ButNot,
     }
 
-    public class Rule : Property.Property
+    public class Rule : Property
     {
         public Rule first;
         public RuleConcatinator concatinator;

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Property
+namespace Game
 {
     public enum ShapeType
     {

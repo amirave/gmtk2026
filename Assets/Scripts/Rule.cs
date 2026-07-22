@@ -1,3 +1,5 @@
+using System;
+
 namespace Game
 {
     public enum RuleConcatinator
@@ -7,10 +9,9 @@ namespace Game
         ButNot,
     }
 
-    public class Rule : Property
+    [Serializable]
+    public class Rule
     {
-        public Rule first;
-        public RuleConcatinator concatinator;
-        public Rule second;
+        public Property property;
     }
 }

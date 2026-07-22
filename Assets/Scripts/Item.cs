@@ -7,6 +7,8 @@ namespace Game
     public class Item : MonoBehaviour
     {
         [SerializeReference] public List<Property> properties = new();
+        
+        public List<Property> Properties => properties;
 
         public bool MatchProperty(Property property)
         {

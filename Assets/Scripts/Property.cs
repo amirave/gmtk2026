@@ -1,17 +1,24 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Property
 {
-    public enum PropertyType
+    public interface IProperty
     {
-        SHAPE,
-        COLOR,
+        public void Compose();
     }
+    
+    [Serializable]
+    public abstract class Property : IProperty
+    {
+        [SerializeField] public bool isComposable;
+        [NonSerialized] public object Chosen;
 
-    public class Property
-    {
-        public PropertyType type;
-        public string value;
+        public void Compose()
+        {
+            throw new NotImplementedException();
+        }
     }
+    
 }

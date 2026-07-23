@@ -14,6 +14,8 @@ public class Rule
 {
     [SerializeReference] public IProperty property;
 
+    public Rule() { }
+
     public Rule(IProperty property)
     {
         this.property = property;

@@ -36,7 +36,6 @@ namespace Game
 
         void Start()
         {
-            _rules = new List<Rule>() { new Rule(new ColorProperty(ColorType.Red)) };
             _cts = new CancellationTokenSource();
             GameLoop(2f, _cts.Token).Forget();
         }
@@ -64,7 +63,7 @@ namespace Game
                 var decisionRemaining = decisionDuration - elapsed;
                 var correctAction = DoesMatchRule(item) ? Decision.Smash : Decision.Pass;
 
-                Debug.Log($"{playerAction}, {correctAction}, DIST: {Math.Abs(elapsed - _inputTimeBefore)}");
+                Debug.Log($"{playerAction} == {correctAction}, DIST: {Math.Abs(elapsed - _inputTimeBefore)}");
                 if (playerAction == Decision.Smash)
                 {
                     _director.Stop();

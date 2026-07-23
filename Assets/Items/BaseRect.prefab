@@ -147,7 +147,7 @@ MonoBehaviour:
     - rid: 4204910136241684560
       type: {class: ComposableColorProperty, ns: Game, asm: Assembly-CSharp}
       data:
-        possibleValues: 000000000200000001000000
+        possibleValues: 0000000002000000
         target: {fileID: 2355808143031203652}
     - rid: 4204910136241684563
       type: {class: ShapeProperty, ns: Game, asm: Assembly-CSharp}

@@ -32,6 +32,8 @@ namespace Game
         [SerializeField] private TimelineAsset _animPass;
         [SerializeField] private Transform _itemParent;
 
+        [SerializeField] private Round _round;
+        
         private CancellationTokenSource _cts;
 
         void Start()
@@ -63,7 +65,16 @@ namespace Game
                 var decisionRemaining = decisionDuration - elapsed;
                 var correctAction = DoesMatchRule(item) ? Decision.Smash : Decision.Pass;
 
-                Debug.Log($"{playerAction} == {correctAction}, DIST: {Math.Abs(elapsed - _inputTimeBefore)}");
+                if (correctAction == playerAction)
+                {
+                    _round.Success();
+                }
+                else
+                {
+                    _round.Fail();
+                }
+
+                // Debug.Log($"{playerAction} == {correctAction}, DIST: {Math.Abs(elapsed - _inputTimeBefore)}");
                 if (playerAction == Decision.Smash)
                 {
                     _director.Stop();
@@ -72,14 +83,6 @@ namespace Game
                     _director.Play();
                     _director.Evaluate();
                 }
-                // if (userChoice == match)
-                // {
-                //     Debug.Log("CORRECT!!");
-                // }
-                // else
-                // {
-                //     Debug.Log("WRONGG");
-                // }
 
                 await UniTask.Delay(TimeSpan.FromSeconds(0.25f + decisionRemaining), cancellationToken: ct);
 

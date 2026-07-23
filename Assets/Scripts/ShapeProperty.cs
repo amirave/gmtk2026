@@ -1,39 +1,35 @@
 using System;
 
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game
 {
     public enum ShapeType
     {
-        SQUARE,
-        CIRCLE,
-        TRIANGLE,
+        Square,
+        Circle,
+        Triangle,
     }
     
     [Serializable]
-    public class ShapeProperty : Property, IProperty
+    public class ShapeProperty : IProperty
     {
-        [SerializeField] public ShapeType Shape;
+        [SerializeField] public ShapeType shape;
 
+        public ShapeProperty(ShapeType shape)
+        {
+            this.shape = shape;
+        }
+        
         public ShapeProperty()
         {
-            isComposable = false;
+            shape = ShapeType.Square;
         }
-
-        public override void Compose()
+        
+        public bool Match(IProperty property)
         {
-            Chosen = Shape.ToString();
-        }
-        public override void ComposeDefault()
-        {
-            Compose();
-        }
-
-        public override void Render() { }
-        public override bool PossibleMatch(Property other)
-        {
-            return (other as ShapeProperty)?.Shape == Shape;
+            return shape == (property as ShapeProperty)?.shape;
         }
     }
 }

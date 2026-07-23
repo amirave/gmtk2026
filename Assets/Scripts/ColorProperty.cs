@@ -1,44 +1,28 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game
 {
-    public enum ColorType
-    {
-        RED,
-        GREEN,
-        BLUE
-    }
-    
     [Serializable]
-    public class ColorProperty : Property, IProperty
+    public class ColorProperty : IProperty
     {
-        [SerializeField] public List<ColorType> possibleValues;
-        [SerializeField] private SpriteRenderer target;
-
-        public new void Compose()
+        [SerializeField] private ColorType _colorType;
+        
+        public ColorType ColorType => _colorType;
+        
+        public ColorProperty(ColorType colorType)
         {
-            switch ((ColorType)Chosen)
-            {
-                case ColorType.RED:
-                    target.color = Color.red;
-                    break;
-                case ColorType.GREEN:
-                    target.color = Color.green;
-                    break;
-                case ColorType.BLUE:
-                    target.color = Color.blue;
-                    break;
-            }
+            _colorType = colorType;
         }
 
-        public bool Match(Property other)
+        public ColorProperty()
         {
-            if (other.GetType() != typeof(ColorProperty)) return false;
-            
-            var otherColor = (ColorProperty)other;
-            return otherColor.Chosen == Chosen;
+            _colorType = ColorType.Red;
+        }
+
+        public bool Match(IProperty property)
+        {
+            return ColorType == (property as ColorProperty)?.ColorType;
         }
     }
 }

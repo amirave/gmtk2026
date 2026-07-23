@@ -14,7 +14,7 @@ namespace Game
     {
         [SerializeField] private float _timePerRound = 3;
         [SerializeField] private List<Item> _itemPrefabs;
-        [SerializeField] private List<Rule> _rules;
+        [SerializeReference] private List<Rule> _rules;
 
         [SerializeField] private PlayableDirector _director;
         [SerializeField] private TimelineAsset _animIn;
@@ -26,10 +26,6 @@ namespace Game
 
         void Start()
         {
-            _rules = new List<Rule>() { new Rule() };
-            var prop = new ColorProperty();
-            prop.possibleValues = new List<ColorType>() { ColorType.RED };
-            _rules[0].property = prop;
             _cts = new CancellationTokenSource();
             GameLoop(2f, _cts.Token).Forget();
         }
@@ -53,7 +49,7 @@ namespace Game
                 var shouldDestroy = Input.GetKey(KeyCode.Space);
                 var match = DoesMatchRule(item);
 
-                Debug.Log($"{shouldDestroy}, {match}");
+                Debug.Log($"PRESSED SPACE: {shouldDestroy}, MATCH: {match}");
                 if (shouldDestroy)
                 {
                     _director.Play(_animSmash);
@@ -80,22 +76,17 @@ namespace Game
             }
         }
 
-        Item GenerateItem()
+        private Item GenerateItem()
         {
             var itemPrefab = _itemPrefabs.PickRandom();
-            return Instantiate(itemPrefab, _itemParent);
+            var item = Instantiate(itemPrefab, _itemParent).Compose();
+            
+            return item;
         }
 
-        bool DoesMatchRule(Item item)
+        private bool DoesMatchRule(Item item)
         {
-            foreach (var rule in _rules)
-            {
-                // Does the item contain the same property of rule with the expected value?
-                var match = item.Properties.Any(prop => prop.Match(rule.property));
-                if (!match) return false;
-            }
-
-            return true;
+            return _rules.Any(rule => item.Match(rule.property));
         }
     }
 }

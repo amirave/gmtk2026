@@ -81,7 +81,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
   m_Color: {r: 0.19744569, g: 0.6402833, b: 0.8207547, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 7535457980630744050}
   - component: {fileID: 7976502068870950831}
   m_Layer: 0
-  m_Name: BlueSquare
+  m_Name: BaseTri
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -137,20 +137,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c0d0b3b904451e8ce9b1115f01a557, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Property.Item
-  properties:
-  - rid: 1712479982808727628
-  - rid: 1712479982808727629
+  _properties:
+  - rid: 4204910136241684564
+  _composableProperties:
+  - rid: 4204910136241684560
   references:
     version: 2
     RefIds:
-    - rid: 1712479982808727628
-      type: {class: ColorProperty, ns: Game, asm: Assembly-CSharp}
+    - rid: 4204910136241684560
+      type: {class: ComposableColorProperty, ns: Game, asm: Assembly-CSharp}
       data:
-        isComposable: 0
-        possibleValues: 02000000
+        possibleValues: 000000000200000001000000
         target: {fileID: 2355808143031203652}
-    - rid: 1712479982808727629
+    - rid: 4204910136241684564
       type: {class: ShapeProperty, ns: Game, asm: Assembly-CSharp}
       data:
-        isComposable: 0
-        Shape: 0
+        shape: 2

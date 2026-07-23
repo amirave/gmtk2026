@@ -1,29 +1,29 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game;
 using UnityEngine;
 
-namespace Game
+public class Item : MonoBehaviour
 {
-    public class Item : MonoBehaviour
+    [SerializeReference] public List<IProperty> _properties = new();
+    [SerializeReference] public List<IComposable> _composableProperties = new();
+
+    private List<IProperty> Properties => _properties;
+    private List<IComposable> ComposableProperties => _composableProperties;
+
+    public Item Compose()
     {
-        [SerializeReference] public List<Property> properties = new();
-        
-        public List<Property> Properties => properties;
-
-        public bool MatchProperty(Property property)
+        foreach (var composableProperty in ComposableProperties)
         {
-            foreach (var currentProperty in properties)
-            {
-                if (currentProperty.Match(property)) return true;
-            }
+            var property = composableProperty.Compose();
+            _properties.Add(property);
+        }
 
-            return false;
-        }
-        
-        public bool PossibleMatchProperty(Property property)
-        {
-            return properties.Any(currentProperty => currentProperty.PossibleMatch(property));
-        }
+        return this;
+    }
+
+    public bool Match(IProperty property)
+    {
+        return Properties.Any(currentProperty => currentProperty.Match(property));
     }
 }

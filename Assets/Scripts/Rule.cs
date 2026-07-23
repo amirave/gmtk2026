@@ -1,17 +1,21 @@
 using System;
+using Game;
+using UnityEngine;
 
-namespace Game
+public enum RuleConcatinator
 {
-    public enum RuleConcatinator
-    {
-        None,
-        And,
-        ButNot,
-    }
+    None,
+    And,
+    ButNot,
+}
 
-    [Serializable]
-    public class Rule
+[Serializable]
+public class Rule
+{
+    [SerializeReference] public IProperty property;
+
+    public Rule(IProperty property)
     {
-        public Property property;
+        this.property = property;
     }
 }

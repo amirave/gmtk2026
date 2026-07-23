@@ -10,9 +10,19 @@ using Object = UnityEngine.Object;
 
 namespace Game
 {
+    public enum Decision
+    {
+        Smash,
+        Pass
+    }
+    
     public class GameManager : MonoBehaviour
     {
         [SerializeField] private float _timePerRound = 3;
+        [SerializeField] private float _inputTime = 1.5f + 0.25f;
+        [SerializeField] private float _inputTimeBefore = 0.25f;
+        [SerializeField] private float _inputTimeAfter = 0.25f;
+        
         [SerializeField] private List<Item> _itemPrefabs;
         [SerializeReference] private List<Rule> _rules;
 
@@ -26,6 +36,7 @@ namespace Game
 
         void Start()
         {
+            _rules = new List<Rule>() { new Rule(new ColorProperty(ColorType.Red)) };
             _cts = new CancellationTokenSource();
             GameLoop(2f, _cts.Token).Forget();
         }
@@ -42,21 +53,25 @@ namespace Game
             {
                 var item = GenerateItem();
 
-                _director.Play(_animIn);
+                _director.Play(_animPass);
 
-                await UniTask.Delay(TimeSpan.FromSeconds(waitSeconds), cancellationToken: ct);
+                // await UniTask.Delay(TimeSpan.FromSeconds(0.25f), cancellationToken: ct);
 
-                var shouldDestroy = Input.GetKey(KeyCode.Space);
-                var match = DoesMatchRule(item);
+                await UniTask.Delay(TimeSpan.FromSeconds(_inputTime - _inputTimeBefore), cancellationToken: ct);
 
-                Debug.Log($"PRESSED SPACE: {shouldDestroy}, MATCH: {match}");
-                if (shouldDestroy)
+                var decisionDuration = _inputTimeBefore + _inputTimeAfter;
+                var (playerAction, elapsed) = await WaitForInputOrTimeout(decisionDuration, ct);
+                var decisionRemaining = decisionDuration - elapsed;
+                var correctAction = DoesMatchRule(item) ? Decision.Smash : Decision.Pass;
+
+                Debug.Log($"{playerAction}, {correctAction}, DIST: {Math.Abs(elapsed - _inputTimeBefore)}");
+                if (playerAction == Decision.Smash)
                 {
-                    _director.Play(_animSmash);
-                }
-                else
-                {
-                    _director.Play(_animPass);
+                    _director.Stop();
+                    _director.playableAsset = _animSmash;
+                    _director.time = _inputTime - _inputTimeBefore + elapsed;
+                    _director.Play();
+                    _director.Evaluate();
                 }
                 // if (userChoice == match)
                 // {
@@ -67,8 +82,8 @@ namespace Game
                 //     Debug.Log("WRONGG");
                 // }
 
-                await UniTask.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken: ct);
-                
+                await UniTask.Delay(TimeSpan.FromSeconds(0.25f + decisionRemaining), cancellationToken: ct);
+
                 Destroy(item.gameObject);
 
                 if (ct.IsCancellationRequested)
@@ -84,9 +99,36 @@ namespace Game
             return item;
         }
 
+        
         private bool DoesMatchRule(Item item)
         {
             return _rules.Any(rule => item.Match(rule.property));
+        }
+
+        public static async UniTask<(Decision, float ElapsedSeconds)> WaitForInputOrTimeout(
+            float timeoutSeconds = 5f,
+            CancellationToken cancellationToken = default)
+        {
+            float elapsed = 0f;
+
+            while (elapsed < timeoutSeconds)
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    return (Decision.Smash, elapsed);
+                }
+
+                if (Input.GetKeyDown(KeyCode.S))
+                {
+                    return (Decision.Pass, elapsed);
+                }
+
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+                elapsed += Time.deltaTime;
+            }
+
+            // Timed out
+            return (Decision.Pass, elapsed);
         }
     }
 }

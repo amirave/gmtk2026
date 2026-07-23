@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 82998637}
   - component: {fileID: 82998638}
+  - component: {fileID: 82998639}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -164,18 +165,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6adc0eac10f22d34290d0132a9debc51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.GameManager
-  _timePerRound: 3
+  _timePerRound: 1
+  _inputTime: 1.75
+  _inputTimeBefore: 0.25
+  _inputTimeAfter: 0.25
   _itemPrefabs:
+  - {fileID: 7976502068870950831, guid: cd42ea9963952d047ad397981eb37740, type: 3}
+  - {fileID: 7976502068870950831, guid: 3d19cb76770c50868832306bd369d8af, type: 3}
+  - {fileID: 7976502068870950831, guid: 0693d5c009edda17b980c637fcf3a05f, type: 3}
+  _rules: []
+  _director: {fileID: 2118549875}
+  _animIn: {fileID: 11400000, guid: 6bf3baf1f3617484fa6eb101d5f7283a, type: 2}
+  _animSmash: {fileID: 11400000, guid: 6bf3baf1f3617484fa6eb101d5f7283a, type: 2}
+  _animPass: {fileID: 11400000, guid: 81e9de55fbeae4f46806377951e99deb, type: 2}
+  _itemParent: {fileID: 997389708}
+  references:
+    version: 2
+    RefIds: []
+--- !u!114 &82998639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 82998635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 097d19e1ad0240409574d4bfb97ac33e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Composer
+  _itemsPrefabs:
   - {fileID: 7976502068870950831, guid: cd42ea9963952d047ad397981eb37740, type: 3}
   - {fileID: 7976502068870950831, guid: 2b8580165820b394d9bee188a0a64a95, type: 3}
   - {fileID: 7976502068870950831, guid: 796417a11e24052489b0013adedfde1c, type: 3}
   - {fileID: 7976502068870950831, guid: d497e6cceafa9bc43945c7ff51501000, type: 3}
-  _rules: []
-  _director: {fileID: 2118549875}
-  _animIn: {fileID: 11400000, guid: 6bf3baf1f3617484fa6eb101d5f7283a, type: 2}
-  _animSmash: {fileID: 11400000, guid: b6e5b979d52d2344da489afc79016069, type: 2}
-  _animPass: {fileID: 11400000, guid: 98b2e083b839f4548a7d135822054711, type: 2}
-  _itemParent: {fileID: 997389708}
 --- !u!1 &107458237
 GameObject:
   m_ObjectHideFlags: 0
@@ -644,7 +667,11 @@ MonoBehaviour:
         m_SelectedSource:
           rid: -2
         m_Provider2DCache:
-          rid: -2
+          rid: 1712480002951610368
+    - rid: 1712480002951610368
+      type: {class: 'Provider2DCache`1[[UnityEngine.Rendering.Universal.Light2DProvider, Unity.RenderPipelines.Universal.2D.Runtime]]', ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.2D.Runtime}
+      data:
+        m_Cache: []
 --- !u!4 &619394802
 Transform:
   m_ObjectHideFlags: 0
@@ -1193,6 +1220,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1288474290}
   - component: {fileID: 1288474289}
+  - component: {fileID: 1288474291}
   m_Layer: 0
   m_Name: press_bottom_0
   m_TagString: Untagged
@@ -1275,6 +1303,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2118549874}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1288474291
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288474288}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1348504650
 GameObject:
   m_ObjectHideFlags: 0
@@ -1683,6 +1733,18 @@ PlayableDirector:
     value: {fileID: 997389709}
   - key: {fileID: 1349070229264783534, guid: 6bf3baf1f3617484fa6eb101d5f7283a, type: 2}
     value: {fileID: 997389707}
+  - key: {fileID: 8870420615038215334, guid: 6bf3baf1f3617484fa6eb101d5f7283a, type: 2}
+    value: {fileID: 723340175}
+  - key: {fileID: 7320303873981354419, guid: 6bf3baf1f3617484fa6eb101d5f7283a, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -56292445383104066, guid: 81e9de55fbeae4f46806377951e99deb, type: 2}
+    value: {fileID: 997389709}
+  - key: {fileID: 1349070229264783534, guid: 81e9de55fbeae4f46806377951e99deb, type: 2}
+    value: {fileID: 997389707}
+  - key: {fileID: 8870420615038215334, guid: 81e9de55fbeae4f46806377951e99deb, type: 2}
+    value: {fileID: 723340175}
+  - key: {fileID: 7320303873981354419, guid: 81e9de55fbeae4f46806377951e99deb, type: 2}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References: []
 --- !u!1660057539 &9223372036854775807

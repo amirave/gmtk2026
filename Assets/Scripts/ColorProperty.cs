@@ -24,5 +24,10 @@ namespace Game
         {
             return ColorType == (property as ColorProperty)?.ColorType;
         }
+
+        public override string ToString()
+        {
+            return $"Color: {_colorType}";
+        }
     }
 }

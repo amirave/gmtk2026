@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Xml;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework.Constraints;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Rendering;
@@ -43,12 +45,15 @@ namespace Game
         [SerializeField] private float _timePerRound = 2;
         [SerializeField] private List<LevelConfig> _levelConfigs;
 
-        private readonly List<Rule> _rules = new();
+        [Header("UI")] [SerializeField] private TMP_Text _rules;
+
+        private Stack<List<Rule>> _ruleHistory = new();
         private Level _level;
         private CancellationTokenSource _cts;
 
         private LevelConfig Config => _levelConfigs[_level.levelNumber - 1];
-        
+        private List<Rule> CurrentRules => _ruleHistory.Count != 0 ? _ruleHistory.Peek() : new List<Rule>();
+
 
         void Start()
         {
@@ -56,18 +61,40 @@ namespace Game
             {
                 maxLevelNumber = _levelConfigs.Count,
                 successPerLevel = _levelConfigs[0].RoundsPerLevel,
+                OnLevelSuccess = LevelPassed,
+                OnLevelFail = LevelFailed,
                 OnLevelChange = LevelChanged
             };
-            _rules.AddRange(Config.AddedRules);
+            LevelPassed();
+            LevelChanged();
 
             _cts = new CancellationTokenSource();
             GameLoop(_cts.Token).Forget();
         }
 
-        private void LevelChanged(int previousLevel, int nextLevel)
+        private void LevelPassed()
         {
-            _rules.AddRange(Config.AddedRules);
+            var currentRules = new List<Rule>();
+            if (_ruleHistory.Count != 0) 
+                 currentRules = _ruleHistory.Peek();
+            
+            currentRules.AddRange(Config.AddedRules);
+            _ruleHistory.Push(currentRules);
+            
             _level.successPerLevel = Config.RoundsPerLevel;
+        }
+
+        private void LevelFailed()
+        {
+            if (_ruleHistory.Count > 1)
+            {
+                _ruleHistory.Pop();
+            }
+        }
+
+        private void LevelChanged()
+        {
+            _rules.text = CurrentRules.Select(rule => rule.property.ToString()).Aggregate((a, b) => $"{a}, {b}");
         }
 
         private void OnDestroy()
@@ -142,7 +169,7 @@ namespace Game
         
         private bool DoesMatchRule(Item item)
         {
-            return _rules.Any(rule => item.Match(rule.property));
+            return CurrentRules.Any(rule => item.Match(rule.property));
         }
 
         private static async UniTask<(Decision, float ElapsedSeconds)> WaitForInputOrTimeout(

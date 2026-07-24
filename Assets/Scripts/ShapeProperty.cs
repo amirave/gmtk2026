@@ -31,5 +31,10 @@ namespace Game
         {
             return shape == (property as ShapeProperty)?.shape;
         }
+        
+        public override string ToString()
+        {
+            return $"Shape: {shape}";
+        }
     }
 }

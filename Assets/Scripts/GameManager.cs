@@ -23,6 +23,8 @@ namespace Game
     
     public class GameManager : MonoBehaviour
     {
+        [SerializeField] private RuleListView _rulelistView;
+        
         [Header("Animation")]
         [SerializeField] private float _inputTime = 1.5f + 0.25f;
         [SerializeField] private float _inputTimeBefore = 0.25f;
@@ -68,6 +70,11 @@ namespace Game
             LevelPassed();
             LevelChanged();
 
+            foreach (var rule in Config.AddedRules)
+            {
+                _rulelistView.AddRuleView(0, rule).Forget();
+            }
+
             _cts = new CancellationTokenSource();
             GameLoop(_cts.Token).Forget();
         }
@@ -81,6 +88,10 @@ namespace Game
             currentRules.AddRange(Config.AddedRules);
             _ruleHistory.Push(currentRules);
             
+            foreach (var rule in Config.AddedRules)
+            {
+                _rulelistView.AddRuleView(0, rule).Forget();
+            }
             _level.successPerLevel = Config.RoundsPerLevel;
         }
 

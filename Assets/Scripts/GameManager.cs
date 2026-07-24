@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using NUnit.Framework.Constraints;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.Rendering;
 using UnityEngine.Timeline;
 using Object = UnityEngine.Object;
 
@@ -20,37 +21,56 @@ namespace Game
     
     public class GameManager : MonoBehaviour
     {
-        [SerializeField] private float _timePerRound = 2;
+        [Header("Animation")]
         [SerializeField] private float _inputTime = 1.5f + 0.25f;
         [SerializeField] private float _inputTimeBefore = 0.25f;
         [SerializeField] private float _inputTimeAfter = 0.25f;
-        
-        [SerializeField] private List<Item> _itemPrefabs;
-        [SerializeReference] private List<Rule> _rules;
-
         [SerializeField] private PlayableDirector _director;
         [SerializeField] private PlayableDirector _directorChild;
         [SerializeField] private TimelineAsset _animMain;
         [SerializeField] private TimelineAsset _animSmash;
         [SerializeField] private TimelineAsset _animPass;
+        [SerializeField] private Transform _itemParent;
+        
+        [Header("Audio")]
         [SerializeField] private AudioSource _audioSource;
         [SerializeField] private AudioSource _audioSecondary;
         [SerializeField] private AudioClip _audioMain;
         [SerializeField] private AudioClip _audioSmash;
         [SerializeField] private AudioClip _audioPass;
-        [SerializeField] private Transform _itemParent;
-
-        [SerializeField] private Round _round;
         
+        [Header("Settings")]
+        [SerializeField] private float _timePerRound = 2;
+        [SerializeField] private List<LevelConfig> _levelConfigs;
+
+        private readonly List<Rule> _rules = new();
+        private Level _level;
         private CancellationTokenSource _cts;
+
+        private LevelConfig Config => _levelConfigs[_level.levelNumber - 1];
+        
 
         void Start()
         {
+            _level = new Level
+            {
+                maxLevelNumber = _levelConfigs.Count,
+                successPerLevel = _levelConfigs[0].RoundsPerLevel,
+                OnLevelChange = LevelChanged
+            };
+            _rules.AddRange(Config.AddedRules);
+
             _cts = new CancellationTokenSource();
             GameLoop(_cts.Token).Forget();
         }
 
-        void OnDestroy()
+        private void LevelChanged(int previousLevel, int nextLevel)
+        {
+            _rules.AddRange(Config.AddedRules);
+            _level.successPerLevel = Config.RoundsPerLevel;
+        }
+
+        private void OnDestroy()
         {
             _cts?.Cancel();
             _cts?.Dispose();
@@ -69,8 +89,6 @@ namespace Game
                 _audioSource.Play();
                 _itemParent.gameObject.SetActive(true);
 
-                // await UniTask.Delay(TimeSpan.FromSeconds(0.25f), cancellationToken: ct);
-
                 await UniTask.Delay(TimeSpan.FromSeconds(_inputTime - _inputTimeBefore), cancellationToken: ct);
 
                 var decisionDuration = _inputTimeBefore + _inputTimeAfter;
@@ -80,11 +98,11 @@ namespace Game
 
                 if (correctAction == playerAction)
                 {
-                    _round.Success();
+                    _level.Success();
                 }
                 else
                 {
-                    _round.Fail();
+                    _level.Fail();
                 }
 
                 Debug.Log($"{playerAction} == {correctAction}, DIST: {Math.Abs(elapsed - _inputTimeBefore)}");
@@ -115,7 +133,7 @@ namespace Game
 
         private Item GenerateItem()
         {
-            var itemPrefab = _itemPrefabs.PickRandom();
+            var itemPrefab = Config.ItemPrefabs.PickRandom();
             var item = Instantiate(itemPrefab, _itemParent).Compose();
             
             return item;
@@ -127,7 +145,7 @@ namespace Game
             return _rules.Any(rule => item.Match(rule.property));
         }
 
-        public static async UniTask<(Decision, float ElapsedSeconds)> WaitForInputOrTimeout(
+        private static async UniTask<(Decision, float ElapsedSeconds)> WaitForInputOrTimeout(
             float timeoutSeconds = 5f,
             CancellationToken cancellationToken = default)
         {

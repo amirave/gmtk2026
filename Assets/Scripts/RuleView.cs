@@ -1,13 +1,19 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
 
 namespace Game
 {
     public class RuleView : MonoBehaviour
     {
         [SerializeField] private TMP_Text _text;
+        [SerializeField] private PlayableDirector _director;
+        [SerializeField] private TimelineAsset _animIn;
 
         private int _id;
         public int Id => _id;
@@ -24,6 +30,12 @@ namespace Game
                     PopulateShape(sp.shape);
                     break;
             }
+        }
+
+        public async UniTask AnimateIn()
+        {
+            _director.Play(_animIn, DirectorWrapMode.Hold);            
+            await UniTask.WaitUntil(0, _ => _director.state != PlayState.Playing);
         }
 
         private void PopulateColor(ColorType type)

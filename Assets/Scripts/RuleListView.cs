@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Game
@@ -13,11 +14,14 @@ namespace Game
             // AddRuleView(0, new Rule(new ShapeProperty(ShapeType.Circle)));
             // AddRuleView(1, new Rule(new ColorProperty(ColorType.Red)));
         }
+        
 
-        public void AddRuleView(int id, Rule rule)
+        public async UniTask AddRuleView(int id, Rule rule, bool animate = true)
         {
             var ruleView = Instantiate(_ruleViewPrefab, _container);
             ruleView.Populate(id, rule);
+            if (animate)
+                await ruleView.AnimateIn();
         }
 
         public void RemoveRuleView(int id)

@@ -47,3 +47,6 @@ MonoBehaviour:
   PlainMaterial: {fileID: 2100000, guid: 168bd61e1d4377c42bc269021ee53729, type: 2}
   StripedMaterial: {fileID: 2100000, guid: 94259307770856c4196bed5981a4c426, type: 2}
   DottedMaterial: {fileID: 2100000, guid: da085f72fb4734c4eaf215122892ab69, type: 2}
+  RedColor: {r: 0.9254902, g: 0.14509805, b: 0.30980393, a: 1}
+  GreenColor: {r: 0.14951938, g: 0.9056604, b: 0.44073594, a: 1}
+  BlueColor: {r: 0.18396229, g: 0.76198906, b: 1, a: 1}

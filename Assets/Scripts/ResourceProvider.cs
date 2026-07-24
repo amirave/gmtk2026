@@ -8,6 +8,10 @@ namespace Game
         public Material PlainMaterial;
         public Material StripedMaterial;
         public Material DottedMaterial;
+
+        public Color RedColor;
+        public Color GreenColor;
+        public Color BlueColor;
         
         public static ResourceProvider Instance;
 

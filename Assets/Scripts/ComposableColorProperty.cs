@@ -24,9 +24,9 @@ namespace Game
 
             target.color = chosen switch
             {
-                ColorType.Red => Color.red,
-                ColorType.Green => Color.green,
-                ColorType.Blue => Color.blue,
+                ColorType.Red => ResourceProvider.Instance.RedColor,
+                ColorType.Green => ResourceProvider.Instance.GreenColor,
+                ColorType.Blue => ResourceProvider.Instance.BlueColor,
                 _ => target.color
             };
 

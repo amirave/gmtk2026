@@ -67,6 +67,7 @@ namespace Game
                 _directorChild.playableAsset = null;
                 _audioSource.clip = _audioMain;
                 _audioSource.Play();
+                _itemParent.gameObject.SetActive(true);
 
                 // await UniTask.Delay(TimeSpan.FromSeconds(0.25f), cancellationToken: ct);
 

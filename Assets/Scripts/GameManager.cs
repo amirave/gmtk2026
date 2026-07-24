@@ -21,6 +21,8 @@ namespace Game
     
     public class GameManager : MonoBehaviour
     {
+        [SerializeField] private RuleListView _rulelistView;
+        
         [Header("Animation")]
         [SerializeField] private float _inputTime = 1.5f + 0.25f;
         [SerializeField] private float _inputTimeBefore = 0.25f;
@@ -58,6 +60,10 @@ namespace Game
                 successPerLevel = _levelConfigs[0].RoundsPerLevel,
                 OnLevelChange = LevelChanged
             };
+            foreach (var rule in Config.AddedRules)
+            {
+                _rulelistView.AddRuleView(0, rule).Forget();
+            }
             _rules.AddRange(Config.AddedRules);
 
             _cts = new CancellationTokenSource();
@@ -67,6 +73,10 @@ namespace Game
         private void LevelChanged(int previousLevel, int nextLevel)
         {
             _rules.AddRange(Config.AddedRules);
+            foreach (var rule in Config.AddedRules)
+            {
+                _rulelistView.AddRuleView(0, rule).Forget();
+            }
             _level.successPerLevel = Config.RoundsPerLevel;
         }
 

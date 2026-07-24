@@ -125,7 +125,7 @@ PlayableDirector:
   m_Enabled: 1
   serializedVersion: 3
   m_PlayableAsset: {fileID: 11400000, guid: 9b5762cbccc4fce4aaf66cd5b4c2b707, type: 2}
-  m_InitialState: 1
+  m_InitialState: 0
   m_WrapMode: 0
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
@@ -218,8 +218,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.RuleView
   _text: {fileID: 8746108092023381505}
-  _director: {fileID: 0}
-  _animIn: {fileID: 0}
+  _director: {fileID: 7161555412184421277}
+  _animIn: {fileID: 11400000, guid: 9b5762cbccc4fce4aaf66cd5b4c2b707, type: 2}
 --- !u!1 &5631928106033951141
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,7 +255,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -49.2947, y: -29.5767}
+  m_SizeDelta: {x: -193.8967, y: -29.5767}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6706228237994058003
 CanvasRenderer:
@@ -312,12 +312,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 47.1
+  m_fontSize: 45
   m_fontSizeBase: 47.1
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 45
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512

@@ -197,6 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6adc0eac10f22d34290d0132a9debc51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.GameManager
+  _rulelistView: {fileID: 1945138127}
   _inputTime: 1.75
   _inputTimeBefore: 0.25
   _inputTimeAfter: 0.1
@@ -212,7 +213,10 @@ MonoBehaviour:
   _audioSmash: {fileID: 8300000, guid: 8fb97a37038b3dc418a506f941a7aec3, type: 3}
   _audioPass: {fileID: 8300000, guid: ea0605f0e6112d440a2ced3697009d5c, type: 3}
   _timePerRound: 2
-  _levelConfigs: []
+  _levelConfigs:
+  - {fileID: 11400000, guid: 4485617a1b2c3ce8aada07f1ef4a42ae, type: 2}
+  - {fileID: 11400000, guid: ad9b0c802c4a5b84988b210dbc4d0db0, type: 2}
+  - {fileID: 11400000, guid: ad9b0c802c4a5b84988b210dbc4d0db0, type: 2}
 --- !u!114 &82998639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -440,8 +444,8 @@ PlayableDirector:
   m_GameObject: {fileID: 321293147}
   m_Enabled: 1
   serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: c30c383419b490941b88601f860ddb4f, type: 2}
-  m_InitialState: 1
+  m_PlayableAsset: {fileID: 0}
+  m_InitialState: 0
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
@@ -1870,8 +1874,8 @@ PlayableDirector:
   m_GameObject: {fileID: 2118549873}
   m_Enabled: 1
   serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: 6bf3baf1f3617484fa6eb101d5f7283a, type: 2}
-  m_InitialState: 1
+  m_PlayableAsset: {fileID: 0}
+  m_InitialState: 0
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
   m_InitialTime: 0

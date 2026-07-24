@@ -24,5 +24,10 @@ namespace Game
         {
             return PatternType == (property as PatternProperty)?.PatternType;
         }
+
+        public string Name()
+        {
+            return PatternType.ToString();
+        }
     }
 }

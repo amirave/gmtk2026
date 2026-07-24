@@ -29,5 +29,10 @@ namespace Game
         {
             return $"Color: {_colorType}";
         }
+
+        public string Name()
+        {
+            return ColorType.ToString();
+        }
     }
 }

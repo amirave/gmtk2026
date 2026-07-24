@@ -7,5 +7,6 @@ namespace Game
     public interface IProperty
     {
         public bool Match(IProperty property);
+        public string Name();
     }
 }

@@ -6,6 +6,7 @@ using System.Xml;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework.Constraints;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Rendering;
@@ -47,30 +48,41 @@ namespace Game
         [SerializeField] private float _timePerRound = 2;
         [SerializeField] private List<LevelConfig> _levelConfigs;
 
-        [Header("UI")] [SerializeField] private TMP_Text _rules;
+        [Header("UI")]
+        [Header("Win Screen")]
+        [SerializeField] private GameObject _nextLevelScreen;
+        [SerializeField] private List<RuleButton> _nextLevelButtons;
 
-        private Stack<List<Rule>> _ruleHistory = new();
+        [Header("Lose Screen")]
+        [SerializeField] private GameObject _loseLevelScreen;
+        [SerializeField] private LoseButton _loseRestartButton;
+        [SerializeField] private LoseButton _loseQuitButton;
+
+        private Stack<List<Rule>> _ruleHistory;
         private Level _level;
         private CancellationTokenSource _cts;
 
         private LevelConfig Config => _levelConfigs[_level.levelNumber - 1];
-        private List<Rule> CurrentRules => _ruleHistory.Count != 0 ? _ruleHistory.Peek() : new List<Rule>();
+        private List<Rule> CurrentRules => _ruleHistory.Count != 0 ? _ruleHistory.Peek() : new List<Rule> (_levelConfigs.First().AddedRules);
 
 
         void Start()
         {
+            _ruleHistory = new();
+
             _level = new Level
             {
                 maxLevelNumber = _levelConfigs.Count,
                 successPerLevel = _levelConfigs[0].RoundsPerLevel,
-                OnLevelSuccess = LevelPassed,
-                OnLevelFail = LevelFailed,
-                OnLevelChange = LevelChanged
+                wonLevelScreen = _nextLevelScreen,
+                lostLevelScreen = _loseLevelScreen,
+                lostRestartButton = _loseRestartButton,
+                lostQuitButton = _loseQuitButton,
+                winChoices = _nextLevelButtons,
             };
-            LevelPassed();
-            LevelChanged();
 
-            foreach (var rule in Config.AddedRules)
+            _rulelistView.ClearRules();
+            foreach (var rule in CurrentRules)
             {
                 _rulelistView.AddRuleView(0, rule).Forget();
             }
@@ -79,16 +91,17 @@ namespace Game
             GameLoop(_cts.Token).Forget();
         }
 
-        private void LevelPassed()
+        private void LevelPassed(Rule chosenRule)
         {
-            var currentRules = new List<Rule>();
-            if (_ruleHistory.Count != 0) 
-                 currentRules = _ruleHistory.Peek();
+            var rules = new List<Rule>(CurrentRules)
+            {
+                chosenRule
+            };
+
+            _ruleHistory.Push(rules);
             
-            currentRules.AddRange(Config.AddedRules);
-            _ruleHistory.Push(currentRules);
-            
-            foreach (var rule in Config.AddedRules)
+            _rulelistView.ClearRules();
+            foreach (var rule in CurrentRules)
             {
                 _rulelistView.AddRuleView(0, rule).Forget();
             }
@@ -97,15 +110,12 @@ namespace Game
 
         private void LevelFailed()
         {
-            if (_ruleHistory.Count > 1)
+            _ruleHistory.Pop();
+            _rulelistView.ClearRules();
+            foreach (var rule in CurrentRules)
             {
-                _ruleHistory.Pop();
+                _rulelistView.AddRuleView(0, rule).Forget();
             }
-        }
-
-        private void LevelChanged()
-        {
-            _rules.text = CurrentRules.Select(rule => rule.property.ToString()).Aggregate((a, b) => $"{a}, {b}");
         }
 
         private void OnDestroy()
@@ -131,17 +141,7 @@ namespace Game
 
                 var decisionDuration = _inputTimeBefore + _inputTimeAfter;
                 var (playerAction, elapsed) = await WaitForInputOrTimeout(decisionDuration, ct);
-                var decisionRemaining = decisionDuration - elapsed;
                 var correctAction = DoesMatchRule(item) ? Decision.Smash : Decision.Pass;
-
-                if (correctAction == playerAction)
-                {
-                    _level.Success();
-                }
-                else
-                {
-                    _level.Fail();
-                }
 
                 Debug.Log($"{playerAction} == {correctAction}, DIST: {Math.Abs(elapsed - _inputTimeBefore)}");
                 if (playerAction == Decision.Smash)
@@ -162,6 +162,26 @@ namespace Game
                 var curTime = Time.time;
                 await UniTask.Delay(TimeSpan.FromSeconds(startTime + _timePerRound - curTime), cancellationToken: ct);
 
+                if (correctAction == playerAction)
+                {
+                    var (movedToNextLevel, chosenRuleButton) = await _level.Success();
+                    if (movedToNextLevel)
+                    {
+                        LevelPassed(chosenRuleButton.Rule);
+                        Debug.Log($"Chosen new Rule: {chosenRuleButton.Rule}");
+                    }
+                }
+                else
+                {
+                    var (didLevelDecrease, chosenLostButton) = await _level.Fail();
+                    if (didLevelDecrease)
+                    {
+                        LevelFailed();
+                    }
+
+                    Debug.Log($"Chosen lost: {chosenLostButton.Value}");
+                }
+
                 Destroy(item.gameObject);
 
                 if (ct.IsCancellationRequested)
@@ -180,6 +200,7 @@ namespace Game
         
         private bool DoesMatchRule(Item item)
         {
+            Debug.Log($"CURRENT RULES: {CurrentRules.Select(rule => rule.ToString()).Aggregate((rules, rule1) => rules += rule1)}");
             return CurrentRules.Any(rule => item.Match(rule.property));
         }
 

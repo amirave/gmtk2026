@@ -26,8 +26,8 @@ MonoBehaviour:
       type: {class: Rule, ns: , asm: Assembly-CSharp}
       data:
         property:
-          rid: 4204910153025978449
-    - rid: 4204910153025978449
-      type: {class: ColorProperty, ns: Game, asm: Assembly-CSharp}
+          rid: 4204910153025978456
+    - rid: 4204910153025978456
+      type: {class: ShapeProperty, ns: Game, asm: Assembly-CSharp}
       data:
-        _colorType: 0
+        shape: 0

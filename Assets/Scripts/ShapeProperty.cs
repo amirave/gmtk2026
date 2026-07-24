@@ -36,5 +36,10 @@ namespace Game
         {
             return $"Shape: {shape}";
         }
+
+        public string Name()
+        {
+            return shape.ToString();
+        }
     }
 }

@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
-
-public delegate void OnLevelChange();
+using UnityEngine.InputSystem;
 
 [Serializable]
 public class Level
@@ -9,45 +12,74 @@ public class Level
     public int levelNumber = 1;
     public int maxLevelNumber;
     public int successPerLevel;
-    public OnLevelChange OnLevelSuccess { get; set; }
-    public OnLevelChange OnLevelFail { get; set; }
-    public OnLevelChange OnLevelChange { get; set; }
+    public GameObject wonLevelScreen;
+    public List<RuleButton> winChoices;
+
+    public GameObject lostLevelScreen;
+    public LoseButton lostRestartButton;
+    public LoseButton lostQuitButton;
 
     private int _successes;
 
-    public void Success()
+    public async Task<RuleButton> WinLevel()
+    {
+        Debug.Log($"Round {levelNumber} successful");
+
+        wonLevelScreen.SetActive(true);
+
+        var taskList = winChoices.Select(choice => choice.WaitForClick()).ToList();
+        var choice = await Task.WhenAny(taskList);
+        var result = await choice;
+
+        var buttonIndex = taskList.FindIndex(item => item == choice);
+
+        wonLevelScreen.SetActive(false);
+
+        return winChoices[buttonIndex];
+    }
+
+    public async Task<LoseButton> LostLevel()
+    {
+        Debug.Log($"Round #{levelNumber} failed");
+
+        lostLevelScreen.SetActive(true);
+
+        var buttonList = new List<LoseButton> { lostRestartButton, lostQuitButton };
+        var taskList = buttonList.Select(button => button.WaitForClick()).ToList();
+
+        var choice = await Task.WhenAny(taskList);
+        var result = await choice;
+
+        var buttonIndex = taskList.FindIndex(item => item == choice);
+
+        lostLevelScreen.SetActive(false);
+        
+        return buttonList[buttonIndex];
+    }
+
+    public async Task<Tuple<bool, RuleButton>> Success()
     {
         _successes++;
         Debug.Log($"Success {_successes}/{successPerLevel} of Round #{levelNumber}");
             
-        if (_successes < successPerLevel) return;
+        if (_successes < successPerLevel) return new Tuple<bool, RuleButton>(false, null);
+
         _successes = 0;
-        
         var previousLevel = levelNumber;
         levelNumber = Math.Min(levelNumber + 1, maxLevelNumber);
 
-        if (previousLevel != levelNumber)
-        {
-            OnLevelFail?.Invoke();
-            OnLevelChange?.Invoke();
-        }
-        
-        Debug.Log($"Round {levelNumber} successful");
+        var button = await WinLevel();
+        return new Tuple<bool, RuleButton>(previousLevel < levelNumber, button);
     }
         
-    public void Fail()
+    public async Task<Tuple<bool, LoseButton>> Fail()
     {
         _successes = 0;
         
         var previousLevel = levelNumber;
         levelNumber = Math.Max(levelNumber - 1, 1);
 
-        if (previousLevel != levelNumber)
-        {
-            OnLevelFail?.Invoke();
-            OnLevelChange?.Invoke();
-        }
-
-        Debug.Log($"Round #{levelNumber} failed");
+        var button = await LostLevel();
+        return new Tuple<bool, LoseButton>(previousLevel > levelNumber, button);
     }
 }

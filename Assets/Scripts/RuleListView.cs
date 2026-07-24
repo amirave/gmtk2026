@@ -35,5 +35,14 @@ namespace Game
                 }
             }
         }
+
+        public void ClearRules()
+        {
+            foreach (Transform child in _container)
+            {
+                var view = child.GetComponent<RuleView>();
+                Destroy(view.gameObject);
+            }
+        }
     }
 }

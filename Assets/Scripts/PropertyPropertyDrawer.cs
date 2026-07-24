@@ -11,7 +11,8 @@ namespace Game
         private static readonly Dictionary<string, Type> AllowedTypes = new()
         {
             { "Color Property", typeof(ColorProperty) },
-            { "Shape Property", typeof(ShapeProperty) }
+            { "Shape Property", typeof(ShapeProperty) },
+            { "Pattern Property", typeof(PatternProperty) },
         };
 
         private static readonly Dictionary<Type, HashSet<string>> HiddenFieldsByType = new();
@@ -128,6 +129,7 @@ namespace Game
         private static readonly Dictionary<string, Type> AllowedTypes = new()
         {
             { "Composable Color Property", typeof(ComposableColorProperty) },
+            { "Composable Pattern Property", typeof(ComposablePatternProperty) },
         };
 
         private static readonly Dictionary<Type, HashSet<string>> HiddenFieldsByType = new();

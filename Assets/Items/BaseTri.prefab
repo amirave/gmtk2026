@@ -119,7 +119,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2215510542317163190}
@@ -141,9 +141,15 @@ MonoBehaviour:
   - rid: 4204910136241684564
   _composableProperties:
   - rid: 4204910136241684560
+  - rid: 1712480002951610456
   references:
     version: 2
     RefIds:
+    - rid: 1712480002951610456
+      type: {class: ComposablePatternProperty, ns: Game, asm: Assembly-CSharp}
+      data:
+        possibleValues: 000000000100000002000000
+        target: {fileID: 2355808143031203652}
     - rid: 4204910136241684560
       type: {class: ComposableColorProperty, ns: Game, asm: Assembly-CSharp}
       data:

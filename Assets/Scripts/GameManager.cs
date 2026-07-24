@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using NUnit.Framework.Constraints;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
@@ -13,12 +14,13 @@ namespace Game
     public enum Decision
     {
         Smash,
-        Pass
+        Pass,
+        None
     }
     
     public class GameManager : MonoBehaviour
     {
-        [SerializeField] private float _timePerRound = 3;
+        [SerializeField] private float _timePerRound = 2;
         [SerializeField] private float _inputTime = 1.5f + 0.25f;
         [SerializeField] private float _inputTimeBefore = 0.25f;
         [SerializeField] private float _inputTimeAfter = 0.25f;
@@ -27,9 +29,15 @@ namespace Game
         [SerializeReference] private List<Rule> _rules;
 
         [SerializeField] private PlayableDirector _director;
-        [SerializeField] private TimelineAsset _animIn;
+        [SerializeField] private PlayableDirector _directorChild;
+        [SerializeField] private TimelineAsset _animMain;
         [SerializeField] private TimelineAsset _animSmash;
         [SerializeField] private TimelineAsset _animPass;
+        [SerializeField] private AudioSource _audioSource;
+        [SerializeField] private AudioSource _audioSecondary;
+        [SerializeField] private AudioClip _audioMain;
+        [SerializeField] private AudioClip _audioSmash;
+        [SerializeField] private AudioClip _audioPass;
         [SerializeField] private Transform _itemParent;
 
         [SerializeField] private Round _round;
@@ -39,7 +47,7 @@ namespace Game
         void Start()
         {
             _cts = new CancellationTokenSource();
-            GameLoop(2f, _cts.Token).Forget();
+            GameLoop(_cts.Token).Forget();
         }
 
         void OnDestroy()
@@ -48,13 +56,17 @@ namespace Game
             _cts?.Dispose();
         }
 
-        public async UniTaskVoid GameLoop(float waitSeconds, CancellationToken ct)
+        private async UniTaskVoid GameLoop(CancellationToken ct)
         {
             while (true)
             {
+                var startTime = Time.time;
                 var item = GenerateItem();
 
-                _director.Play(_animPass);
+                _director.Play(_animMain);
+                _directorChild.playableAsset = null;
+                _audioSource.clip = _audioMain;
+                _audioSource.Play();
 
                 // await UniTask.Delay(TimeSpan.FromSeconds(0.25f), cancellationToken: ct);
 
@@ -74,17 +86,24 @@ namespace Game
                     _round.Fail();
                 }
 
-                // Debug.Log($"{playerAction} == {correctAction}, DIST: {Math.Abs(elapsed - _inputTimeBefore)}");
+                Debug.Log($"{playerAction} == {correctAction}, DIST: {Math.Abs(elapsed - _inputTimeBefore)}");
                 if (playerAction == Decision.Smash)
                 {
-                    _director.Stop();
-                    _director.playableAsset = _animSmash;
-                    _director.time = _inputTime - _inputTimeBefore + elapsed;
-                    _director.Play();
-                    _director.Evaluate();
+                    _directorChild.playableAsset = _animSmash;
+                    _directorChild.Play();
+                    _audioSecondary.clip = _audioSmash;
+                    _audioSecondary.Play();
+                }
+                else if (playerAction == Decision.Pass)
+                {
+                    _directorChild.playableAsset = _animPass;
+                    _directorChild.Play();
+                    _audioSecondary.clip = _audioPass;
+                    _audioSecondary.Play();
                 }
 
-                await UniTask.Delay(TimeSpan.FromSeconds(0.25f + decisionRemaining), cancellationToken: ct);
+                var curTime = Time.time;
+                await UniTask.Delay(TimeSpan.FromSeconds(startTime + _timePerRound - curTime), cancellationToken: ct);
 
                 Destroy(item.gameObject);
 
@@ -130,7 +149,7 @@ namespace Game
             }
 
             // Timed out
-            return (Decision.Pass, elapsed);
+            return (Decision.None, elapsed);
         }
     }
 }

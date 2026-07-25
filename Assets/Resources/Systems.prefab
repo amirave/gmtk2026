@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7563978998507578096}
   - component: {fileID: 231960389224723097}
+  - component: {fileID: 4089062354315872029}
   m_Layer: 0
   m_Name: Systems
   m_TagString: Untagged
@@ -53,3 +54,17 @@ MonoBehaviour:
   BrimlessYanky: {fileID: 2800000, guid: bedc72661063ce00ea7e889e10578518, type: 3}
   Crown: {fileID: 2800000, guid: d690242dbf9db9c89bf966edbc50f92d, type: 3}
   Nothing: {fileID: 0}
+--- !u!114 &4089062354315872029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8901298533980171270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 805c3f3e1772113429926945485e83db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Scripts.Audio.AudioManager
+  _musicTracks: []
+  _mixer: {fileID: 24100000, guid: d9362b5d3e2a43546940dc686c4807cd, type: 2}

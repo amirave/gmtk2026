@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class LoseLevelScreen : MonoBehaviour
+    public class PopupScreen : MonoBehaviour
     {
         [SerializeField] private CustomButton _okButton;
 

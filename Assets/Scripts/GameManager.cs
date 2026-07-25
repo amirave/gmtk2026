@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework.Constraints;
+using Scripts.Audio;
 using TMPro;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
@@ -47,10 +48,10 @@ namespace Game
         [SerializeField] private List<LevelConfig> _levelConfigs;
 
         [Header("UI")] [Header("Win Screen")] [SerializeField]
-        private NextLevelScreen _nextLevelScreen;
-
-        [Header("Lose Screen")] [SerializeField]
-        private LoseLevelScreen _loseLevelScreen;
+        private PopupScreen _introScreen;
+        [SerializeField] private NextLevelScreen _nextLevelScreen;
+        [SerializeField] private PopupScreen _loseLevelScreen;
+        [SerializeField] private PopupScreen _winScreen;
 
         private Stack<List<Rule>> _ruleHistory;
         private Level _level;
@@ -66,18 +67,8 @@ namespace Game
             _ruleHistory = new();
             // Time.timeScale = 0.5f;
             // _audioSource.pitch = 0.5f;
-
-            _level = new Level
-            {
-                maxLevelNumber = _levelConfigs.Count,
-                successPerLevel = _levelConfigs[0].RoundsPerLevel,
-            };
-
-            _rulelistView.ClearRules();
-            foreach (var rule in CurrentRules)
-            {
-                _rulelistView.AddRuleView(0, rule).Forget();
-            }
+            AudioManager.Instance.SetupAudioSource(_audioSource);
+            AudioManager.Instance.SetupAudioSource(_audioSecondary);
 
             _cts = new CancellationTokenSource();
             GameLoop(_cts.Token).Forget();
@@ -90,7 +81,7 @@ namespace Game
             _nextLevelScreen.gameObject.SetActive(false);
 
             var prevRules = CurrentRules;
-            
+
             var rules = new List<Rule>(CurrentRules) { chosenRule };
             _ruleHistory.Push(rules);
 
@@ -113,12 +104,31 @@ namespace Game
 
             // _ruleHistory.Pop();
             _ruleHistory.Clear();
-            
+
             _rulelistView.ClearRules();
             foreach (var rule in CurrentRules)
             {
                 _rulelistView.AddRuleView(0, rule).Forget();
             }
+
+            _level.successPerLevel = Config.RoundsPerLevel;
+        }
+
+        private async UniTask PlayWin()
+        {
+            _winScreen.gameObject.SetActive(true);
+            await _winScreen.Show();
+            _winScreen.gameObject.SetActive(false);
+
+            // Restart
+            _ruleHistory.Clear();
+
+            _rulelistView.ClearRules();
+            foreach (var rule in CurrentRules)
+            {
+                _rulelistView.AddRuleView(0, rule).Forget();
+            }
+
             _level.successPerLevel = Config.RoundsPerLevel;
         }
 
@@ -130,6 +140,22 @@ namespace Game
 
         private async UniTaskVoid GameLoop(CancellationToken ct)
         {
+            _introScreen.gameObject.SetActive(true);
+            await _introScreen.Show();
+            _introScreen.gameObject.SetActive(false);
+            
+            _level = new Level
+            {
+                maxLevelNumber = _levelConfigs.Count,
+                successPerLevel = _levelConfigs[0].RoundsPerLevel,
+            };
+
+            _rulelistView.ClearRules();
+            foreach (var rule in CurrentRules)
+            {
+                _rulelistView.AddRuleView(0, rule).Forget();
+            }
+
             while (true)
             {
                 var startTime = Time.time;
@@ -168,22 +194,24 @@ namespace Game
 
                 if (correctAction == playerAction)
                 {
+                    var prevLevel = _level.levelNumber;
                     var movedToNextLevel = _level.Success();
                     if (movedToNextLevel)
                     {
-                        if (_level.levelNumber < _levelConfigs.Count - 1)
+                        // Means we won (evil)
+                        if (_level.levelNumber == prevLevel)
                         {
-                            await PlayLevelPassed(Config.AddedRules[0]);
+                            await PlayWin();
                         }
                         else
                         {
-                            await PlayWin();
+                            await PlayLevelPassed(Config.AddedRules[0]);
                         }
                     }
                 }
                 else
                 {
-                    var didLevelDecrease =  _level.Fail();
+                    var didLevelDecrease = _level.Fail();
                     if (didLevelDecrease)
                     {
                         await PlayLevelFailed();
@@ -194,10 +222,6 @@ namespace Game
 
                 if (ct.IsCancellationRequested) return;
             }
-        }
-
-        private async UniTask PlayWin()
-        {
         }
 
         private Item GenerateItem()
@@ -212,7 +236,7 @@ namespace Game
         {
             return CurrentRules.Any(rule => rule.MatchItem(item));
         }
-        
+
         private static async UniTask<(Decision, float ElapsedSeconds)> WaitForInputOrTimeout(float timeoutSeconds = 5f,
             CancellationToken cancellationToken = default)
         {

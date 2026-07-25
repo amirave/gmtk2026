@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5029981187891069334, guid: 3d19cb76770c50868832306bd369d8af, type: 3}
       propertyPath: m_Name
-      value: BaseShape
+      value: BaseCircle
       objectReference: {fileID: 0}
     - target: {fileID: 7535457980630744050, guid: 3d19cb76770c50868832306bd369d8af, type: 3}
       propertyPath: m_LocalPosition.x

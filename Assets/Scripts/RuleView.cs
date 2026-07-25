@@ -89,10 +89,10 @@ namespace Game
                     content = string.Format(content, "SQUARE");
                     break;
                 case ShapeType.Circle:
-                    content = string.Format(content, "TRIANGLE");
+                    content = string.Format(content, "CIRCLE");
                     break;
                 case ShapeType.Triangle:
-                    content = string.Format(content, "CIRCLE");
+                    content = string.Format(content, "TRIANGLE");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -106,10 +106,10 @@ namespace Game
             switch (type)
             {
                 case EmotionType.None:
-                    content = string.Format(content, "Dead");
+                    content = string.Format(content, "LIFELESS");
                     break;
                 case EmotionType.Happy:
-                    content = string.Format(content, "Whimsical");
+                    content = string.Format(content, "WHIMSICAL");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);

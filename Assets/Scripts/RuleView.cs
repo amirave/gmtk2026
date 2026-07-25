@@ -46,6 +46,8 @@ namespace Game
                     return PopulateShape(sp.shape);
                 case EmotionProperty sp:
                     return PopulateEmotion(sp.emotion);
+                case PatternProperty pp:
+                    return PopulatePattern(pp.PatternType);
             }
 
             return "ERROR";
@@ -108,6 +110,26 @@ namespace Game
                     break;
                 case EmotionType.Happy:
                     content = string.Format(content, "Whimsical");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+            return content;
+        }
+
+        private string PopulatePattern(PatternType type)
+        {
+            var content = LARGE_FORMAT;
+            switch (type)
+            {
+                case PatternType.Plain:
+                    content = string.Format(content, "PLAIN");
+                    break;
+                case PatternType.Striped:
+                    content = string.Format(content, "STRIPED");
+                    break;
+                case PatternType.Dotted:
+                    content = string.Format(content, "DOTTED");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);

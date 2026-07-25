@@ -197,11 +197,9 @@ namespace Game
 
         private bool DoesMatchRule(Item item)
         {
-            Debug.Log(
-                $"CURRENT RULES: {CurrentRules.Select(rule => rule.ToString()).Aggregate((rules, rule1) => rules += rule1)}");
-            return CurrentRules.Any(rule => item.Match(rule.property));
+            return CurrentRules.Any(rule => rule.MatchItem(item));
         }
-
+        
         private static async UniTask<(Decision, float ElapsedSeconds)> WaitForInputOrTimeout(float timeoutSeconds = 5f,
             CancellationToken cancellationToken = default)
         {

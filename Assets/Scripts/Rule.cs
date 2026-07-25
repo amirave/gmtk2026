@@ -25,4 +25,21 @@ public class Rule
         this.mode = mode;
         secondProperty = second;
     }
+    
+    public bool MatchItem(Item item)
+    {
+        switch (mode)
+        {
+            case RuleMode.None:
+                return item.Match(property);
+            case RuleMode.IsNot:
+                return !item.Match(property);
+            case RuleMode.And:
+                return item.Match(property) && item.Match(secondProperty);
+            case RuleMode.ButNot:
+                return item.Match(property) && !item.Match(secondProperty);
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+        }
+    }
 }

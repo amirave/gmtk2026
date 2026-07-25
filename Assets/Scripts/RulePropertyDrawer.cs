@@ -6,6 +6,9 @@ namespace Game
     [CustomPropertyDrawer(typeof(Rule))]
     public class RulePropertyDrawer : PropertyDrawer
     {
+        private static readonly string[] FieldNames = { "property", "mode", "secondProperty" };
+        private static readonly string[] FieldLabels = { "Property", "Mode", "Second Property" };
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
@@ -44,12 +47,15 @@ namespace Game
                     EditorGUI.indentLevel++;
                     float y = position.y + lineHeight + spacing;
 
-                    SerializedProperty propertyField = property.FindPropertyRelative("property");
-                    if (propertyField != null)
+                    for (int i = 0; i < FieldNames.Length; i++)
                     {
-                        float childHeight = EditorGUI.GetPropertyHeight(propertyField, true);
-                        Rect childRect = new(position.x, y, position.width, childHeight);
-                        EditorGUI.PropertyField(childRect, propertyField, new GUIContent("Property"), true);
+                        SerializedProperty field = property.FindPropertyRelative(FieldNames[i]);
+                        if (field == null) continue;
+
+                        float fieldHeight = EditorGUI.GetPropertyHeight(field, true);
+                        Rect fieldRect = new(position.x, y, position.width, fieldHeight);
+                        EditorGUI.PropertyField(fieldRect, field, new GUIContent(FieldLabels[i]), true);
+                        y += fieldHeight + spacing;
                     }
 
                     EditorGUI.indentLevel--;
@@ -66,16 +72,19 @@ namespace Game
 
             var rule = property.managedReferenceValue as Rule;
 
-            if (rule == null)
-                return lineHeight;
+            if (rule == null) return lineHeight;
+            if (!property.isExpanded) return lineHeight;
 
-            if (!property.isExpanded)
-                return lineHeight;
+            float height = lineHeight + spacing;
 
-            SerializedProperty propertyField = property.FindPropertyRelative("property");
-            float childHeight = propertyField != null ? EditorGUI.GetPropertyHeight(propertyField, true) : lineHeight;
+            foreach (string fieldName in FieldNames)
+            {
+                SerializedProperty field = property.FindPropertyRelative(fieldName);
+                float fieldHeight = field != null ? EditorGUI.GetPropertyHeight(field, true) : lineHeight;
+                height += fieldHeight + spacing;
+            }
 
-            return lineHeight + spacing + childHeight + spacing;
+            return height;
         }
     }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2215510542317163190}
   - component: {fileID: 2355808143031203652}
   m_Layer: 0
-  m_Name: Triangle
+  m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,7 +58,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 94259307770856c4196bed5981a4c426, type: 2}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -81,12 +81,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 3ed40cf1885fe1e40bf80c083feb42fc, type: 3}
-  m_Color: {r: 0.5235849, g: 0.86216927, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 926000bec00c16842a6696a10d2e6c90, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 10.24, y: 5.76}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 7535457980630744050}
   - component: {fileID: 7976502068870950831}
   m_Layer: 0
-  m_Name: BaseTri
+  m_Name: BaseShape
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -138,24 +138,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Property.Item
   _properties:
-  - rid: 4204910136241684564
+  - rid: 4204910136241684562
+  - rid: 1712480002951610469
   _composableProperties:
   - rid: 4204910136241684560
-  - rid: 1712480002951610456
+  - rid: 1712480002951610454
   references:
     version: 2
     RefIds:
-    - rid: 1712480002951610456
+    - rid: 1712480002951610454
       type: {class: ComposablePatternProperty, ns: Game, asm: Assembly-CSharp}
       data:
         possibleValues: 000000000100000002000000
         target: {fileID: 2355808143031203652}
+    - rid: 1712480002951610469
+      type: {class: EmotionProperty, ns: Game, asm: Assembly-CSharp}
+      data:
+        emotion: 0
     - rid: 4204910136241684560
       type: {class: ComposableColorProperty, ns: Game, asm: Assembly-CSharp}
       data:
         possibleValues: 0000000002000000
         target: {fileID: 2355808143031203652}
-    - rid: 4204910136241684564
+    - rid: 4204910136241684562
       type: {class: ShapeProperty, ns: Game, asm: Assembly-CSharp}
       data:
-        shape: 2
+        shape: 1

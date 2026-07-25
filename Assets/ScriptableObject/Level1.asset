@@ -15,9 +15,9 @@ MonoBehaviour:
   _addedRules:
   - rid: 4204910153025978448
   _itemPrefabs:
-  - {fileID: 7976502068870950831, guid: 3d19cb76770c50868832306bd369d8af, type: 3}
-  - {fileID: 7976502068870950831, guid: 0693d5c009edda17b980c637fcf3a05f, type: 3}
-  - {fileID: 7976502068870950831, guid: cd42ea9963952d047ad397981eb37740, type: 3}
+  - {fileID: 1823644801707437398, guid: c9b536e0c9002184f964cd2d3589fe53, type: 3}
+  - {fileID: 499866998624878966, guid: fffd0ef9ee3ecc94ca43a5974e6c55f6, type: 3}
+  - {fileID: 519823944217027770, guid: 94ccd4a93aa79524fb9df281c8e1419c, type: 3}
   _roundsPerLevel: 5
   references:
     version: 2

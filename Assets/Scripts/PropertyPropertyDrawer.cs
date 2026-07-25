@@ -13,6 +13,7 @@ namespace Game
             { "Color Property", typeof(ColorProperty) },
             { "Shape Property", typeof(ShapeProperty) },
             { "Pattern Property", typeof(PatternProperty) },
+            { "Emotion Property", typeof(EmotionProperty) },
         };
 
         private static readonly Dictionary<Type, HashSet<string>> HiddenFieldsByType = new();

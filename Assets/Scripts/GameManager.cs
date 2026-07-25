@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework.Constraints;
@@ -49,10 +50,7 @@ namespace Game
         private NextLevelScreen _nextLevelScreen;
 
         [Header("Lose Screen")] [SerializeField]
-        private GameObject _loseLevelScreen;
-
-        [SerializeField] private LoseButton _loseRestartButton;
-        [SerializeField] private LoseButton _loseQuitButton;
+        private LoseLevelScreen _loseLevelScreen;
 
         private Stack<List<Rule>> _ruleHistory;
         private Level _level;
@@ -66,14 +64,13 @@ namespace Game
         void Start()
         {
             _ruleHistory = new();
+            // Time.timeScale = 0.5f;
+            // _audioSource.pitch = 0.5f;
 
             _level = new Level
             {
                 maxLevelNumber = _levelConfigs.Count,
                 successPerLevel = _levelConfigs[0].RoundsPerLevel,
-                lostLevelScreen = _loseLevelScreen,
-                lostRestartButton = _loseRestartButton,
-                lostQuitButton = _loseQuitButton,
             };
 
             _rulelistView.ClearRules();
@@ -86,7 +83,7 @@ namespace Game
             GameLoop(_cts.Token).Forget();
         }
 
-        private async UniTask LevelPassed(Rule chosenRule)
+        private async UniTask PlayLevelPassed(Rule chosenRule)
         {
             _nextLevelScreen.gameObject.SetActive(true);
             await _nextLevelScreen.Show(chosenRule);
@@ -108,14 +105,21 @@ namespace Game
             _level.successPerLevel = Config.RoundsPerLevel;
         }
 
-        private void LevelFailed()
+        private async UniTask PlayLevelFailed()
         {
-            _ruleHistory.Pop();
+            _loseLevelScreen.gameObject.SetActive(true);
+            await _loseLevelScreen.Show();
+            _loseLevelScreen.gameObject.SetActive(false);
+
+            // _ruleHistory.Pop();
+            _ruleHistory.Clear();
+            
             _rulelistView.ClearRules();
             foreach (var rule in CurrentRules)
             {
                 _rulelistView.AddRuleView(0, rule).Forget();
             }
+            _level.successPerLevel = Config.RoundsPerLevel;
         }
 
         private void OnDestroy()
@@ -167,24 +171,33 @@ namespace Game
                     var movedToNextLevel = _level.Success();
                     if (movedToNextLevel)
                     {
-                        await LevelPassed(Config.AddedRules[0]);
+                        if (_level.levelNumber < _levelConfigs.Count - 1)
+                        {
+                            await PlayLevelPassed(Config.AddedRules[0]);
+                        }
+                        else
+                        {
+                            await PlayWin();
+                        }
                     }
                 }
                 else
                 {
-                    var (didLevelDecrease, chosenLostButton) = await _level.Fail();
+                    var didLevelDecrease =  _level.Fail();
                     if (didLevelDecrease)
                     {
-                        LevelFailed();
+                        await PlayLevelFailed();
                     }
-
-                    Debug.Log($"Chosen lost: {chosenLostButton.Value}");
                 }
 
                 Destroy(item.gameObject);
 
                 if (ct.IsCancellationRequested) return;
             }
+        }
+
+        private async UniTask PlayWin()
+        {
         }
 
         private Item GenerateItem()
@@ -197,11 +210,9 @@ namespace Game
 
         private bool DoesMatchRule(Item item)
         {
-            Debug.Log(
-                $"CURRENT RULES: {CurrentRules.Select(rule => rule.ToString()).Aggregate((rules, rule1) => rules += rule1)}");
-            return CurrentRules.Any(rule => item.Match(rule.property));
+            return CurrentRules.Any(rule => rule.MatchItem(item));
         }
-
+        
         private static async UniTask<(Decision, float ElapsedSeconds)> WaitForInputOrTimeout(float timeoutSeconds = 5f,
             CancellationToken cancellationToken = default)
         {

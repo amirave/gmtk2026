@@ -3,18 +3,14 @@ using UnityEngine;
 
 namespace Game
 {
-    public class NextLevelScreen : MonoBehaviour
+    public class LoseLevelScreen : MonoBehaviour
     {
-        [SerializeField] private RuleView _ruleView;
         [SerializeField] private CustomButton _okButton;
 
-        public async UniTask Show(Rule rule)
+        public async UniTask Show()
         {
-            _ruleView.Populate(0, rule);
-
-            await _ruleView.AnimateIn();
-
             await UniTask.WhenAny(_okButton.WaitForClick(), UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.DownArrow), PlayerLoopTiming.Update));
         }
+
     }
 }

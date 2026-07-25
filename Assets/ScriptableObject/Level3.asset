@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 51753f8017b388a7e814035052eaac1e, type: 3}
-  m_Name: Level2
+  m_Name: Level3
   m_EditorClassIdentifier: Assembly-CSharp::Level
   _addedRules:
   - rid: 4204910153025978448
@@ -22,17 +22,19 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 1712480002951610481
+      type: {class: ColorProperty, ns: Game, asm: Assembly-CSharp}
+      data:
+        _colorType: 2
     - rid: 4204910153025978448
       type: {class: Rule, ns: , asm: Assembly-CSharp}
       data:
         property:
           rid: 4204910153025978456
-        mode: 0
+        mode: 2
         secondProperty:
-          rid: -2
+          rid: 1712480002951610481
     - rid: 4204910153025978456
       type: {class: ShapeProperty, ns: Game, asm: Assembly-CSharp}
       data:
-        shape: 0
+        shape: 2

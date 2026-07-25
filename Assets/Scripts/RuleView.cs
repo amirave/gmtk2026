@@ -46,6 +46,8 @@ namespace Game
                     return PopulateShape(sp.shape);
                 case EmotionProperty sp:
                     return PopulateEmotion(sp.emotion);
+                case PatternProperty pp:
+                    return PopulatePattern(pp.PatternType);
             }
 
             return "ERROR";
@@ -87,10 +89,10 @@ namespace Game
                     content = string.Format(content, "SQUARE");
                     break;
                 case ShapeType.Circle:
-                    content = string.Format(content, "TRIANGLE");
+                    content = string.Format(content, "CIRCLE");
                     break;
                 case ShapeType.Triangle:
-                    content = string.Format(content, "CIRCLE");
+                    content = string.Format(content, "TRIANGLE");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -104,10 +106,30 @@ namespace Game
             switch (type)
             {
                 case EmotionType.None:
-                    content = string.Format(content, "Dead");
+                    content = string.Format(content, "LIFELESS");
                     break;
                 case EmotionType.Happy:
-                    content = string.Format(content, "Whimsical");
+                    content = string.Format(content, "WHIMSICAL");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+            return content;
+        }
+
+        private string PopulatePattern(PatternType type)
+        {
+            var content = LARGE_FORMAT;
+            switch (type)
+            {
+                case PatternType.Plain:
+                    content = string.Format(content, "PLAIN");
+                    break;
+                case PatternType.Striped:
+                    content = string.Format(content, "STRIPED");
+                    break;
+                case PatternType.Dotted:
+                    content = string.Format(content, "DOTTED");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);

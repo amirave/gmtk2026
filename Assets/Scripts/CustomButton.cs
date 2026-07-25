@@ -1,23 +1,23 @@
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CustomButton : MonoBehaviour
 {
-    private TaskCompletionSource<bool> _tcs;
+    private UniTaskCompletionSource<bool> _tcs;
 
-
-    public Task<bool> WaitForClick()
+    public UniTask<bool> WaitForClick()
     {
-        _tcs = new TaskCompletionSource<bool>();
-
-        gameObject.GetComponent<Button>().onClick.AddListener(OnClicked);
+        _tcs = new UniTaskCompletionSource<bool>();
+        var button = GetComponent<Button>();
+        button.onClick.AddListener(OnClicked);
         return _tcs.Task;
     }
 
     private void OnClicked()
     {
-        gameObject.GetComponent<Button>().onClick.RemoveListener(OnClicked);
+        GetComponent<Button>().onClick.RemoveListener(OnClicked);
         _tcs.TrySetResult(true);
     }
 }

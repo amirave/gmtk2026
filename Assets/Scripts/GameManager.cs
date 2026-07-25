@@ -21,13 +21,12 @@ namespace Game
         Pass,
         None
     }
-    
+
     public class GameManager : MonoBehaviour
     {
         [SerializeField] private RuleListView _rulelistView;
-        
-        [Header("Animation")]
-        [SerializeField] private float _inputTime = 1.5f + 0.25f;
+
+        [Header("Animation")] [SerializeField] private float _inputTime = 1.5f + 0.25f;
         [SerializeField] private float _inputTimeBefore = 0.25f;
         [SerializeField] private float _inputTimeAfter = 0.25f;
         [SerializeField] private PlayableDirector _director;
@@ -36,25 +35,22 @@ namespace Game
         [SerializeField] private TimelineAsset _animSmash;
         [SerializeField] private TimelineAsset _animPass;
         [SerializeField] private Transform _itemParent;
-        
-        [Header("Audio")]
-        [SerializeField] private AudioSource _audioSource;
+
+        [Header("Audio")] [SerializeField] private AudioSource _audioSource;
         [SerializeField] private AudioSource _audioSecondary;
         [SerializeField] private AudioClip _audioMain;
         [SerializeField] private AudioClip _audioSmash;
         [SerializeField] private AudioClip _audioPass;
-        
-        [Header("Settings")]
-        [SerializeField] private float _timePerRound = 2;
+
+        [Header("Settings")] [SerializeField] private float _timePerRound = 2;
         [SerializeField] private List<LevelConfig> _levelConfigs;
 
-        [Header("UI")]
-        [Header("Win Screen")]
-        [SerializeField] private GameObject _nextLevelScreen;
-        [SerializeField] private List<RuleButton> _nextLevelButtons;
+        [Header("UI")] [Header("Win Screen")] [SerializeField]
+        private NextLevelScreen _nextLevelScreen;
 
-        [Header("Lose Screen")]
-        [SerializeField] private GameObject _loseLevelScreen;
+        [Header("Lose Screen")] [SerializeField]
+        private GameObject _loseLevelScreen;
+
         [SerializeField] private LoseButton _loseRestartButton;
         [SerializeField] private LoseButton _loseQuitButton;
 
@@ -63,8 +59,9 @@ namespace Game
         private CancellationTokenSource _cts;
 
         private LevelConfig Config => _levelConfigs[_level.levelNumber - 1];
-        private List<Rule> CurrentRules => _ruleHistory.Count != 0 ? _ruleHistory.Peek() : new List<Rule> (_levelConfigs.First().AddedRules);
 
+        private List<Rule> CurrentRules =>
+            _ruleHistory.Count != 0 ? _ruleHistory.Peek() : new List<Rule>(_levelConfigs.First().AddedRules);
 
         void Start()
         {
@@ -74,11 +71,9 @@ namespace Game
             {
                 maxLevelNumber = _levelConfigs.Count,
                 successPerLevel = _levelConfigs[0].RoundsPerLevel,
-                wonLevelScreen = _nextLevelScreen,
                 lostLevelScreen = _loseLevelScreen,
                 lostRestartButton = _loseRestartButton,
                 lostQuitButton = _loseQuitButton,
-                winChoices = _nextLevelButtons,
             };
 
             _rulelistView.ClearRules();
@@ -91,20 +86,25 @@ namespace Game
             GameLoop(_cts.Token).Forget();
         }
 
-        private void LevelPassed(Rule chosenRule)
+        private async UniTask LevelPassed(Rule chosenRule)
         {
-            var rules = new List<Rule>(CurrentRules)
-            {
-                chosenRule
-            };
+            _nextLevelScreen.gameObject.SetActive(true);
+            await _nextLevelScreen.Show(chosenRule);
+            _nextLevelScreen.gameObject.SetActive(false);
 
-            _ruleHistory.Push(rules);
+            var prevRules = CurrentRules;
             
+            var rules = new List<Rule>(CurrentRules) { chosenRule };
+            _ruleHistory.Push(rules);
+
             _rulelistView.ClearRules();
-            foreach (var rule in CurrentRules)
+            foreach (var rule in prevRules)
             {
-                _rulelistView.AddRuleView(0, rule).Forget();
+                _rulelistView.AddRuleView(0, rule, false).Forget();
             }
+
+            await _rulelistView.AddRuleView(0, chosenRule, true);
+
             _level.successPerLevel = Config.RoundsPerLevel;
         }
 
@@ -164,11 +164,10 @@ namespace Game
 
                 if (correctAction == playerAction)
                 {
-                    var (movedToNextLevel, chosenRuleButton) = await _level.Success();
+                    var movedToNextLevel = _level.Success();
                     if (movedToNextLevel)
                     {
-                        LevelPassed(chosenRuleButton.Rule);
-                        Debug.Log($"Chosen new Rule: {chosenRuleButton.Rule}");
+                        await LevelPassed(Config.AddedRules[0]);
                     }
                 }
                 else
@@ -184,8 +183,7 @@ namespace Game
 
                 Destroy(item.gameObject);
 
-                if (ct.IsCancellationRequested)
-                    return;
+                if (ct.IsCancellationRequested) return;
             }
         }
 
@@ -193,31 +191,30 @@ namespace Game
         {
             var itemPrefab = Config.ItemPrefabs.PickRandom();
             var item = Instantiate(itemPrefab, _itemParent).Compose();
-            
+
             return item;
         }
 
-        
         private bool DoesMatchRule(Item item)
         {
-            Debug.Log($"CURRENT RULES: {CurrentRules.Select(rule => rule.ToString()).Aggregate((rules, rule1) => rules += rule1)}");
+            Debug.Log(
+                $"CURRENT RULES: {CurrentRules.Select(rule => rule.ToString()).Aggregate((rules, rule1) => rules += rule1)}");
             return CurrentRules.Any(rule => item.Match(rule.property));
         }
 
-        private static async UniTask<(Decision, float ElapsedSeconds)> WaitForInputOrTimeout(
-            float timeoutSeconds = 5f,
+        private static async UniTask<(Decision, float ElapsedSeconds)> WaitForInputOrTimeout(float timeoutSeconds = 5f,
             CancellationToken cancellationToken = default)
         {
             float elapsed = 0f;
 
             while (elapsed < timeoutSeconds)
             {
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.DownArrow))
                 {
                     return (Decision.Smash, elapsed);
                 }
 
-                if (Input.GetKeyDown(KeyCode.S))
+                if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.UpArrow))
                 {
                     return (Decision.Pass, elapsed);
                 }

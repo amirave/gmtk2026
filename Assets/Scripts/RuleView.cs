@@ -34,8 +34,8 @@ namespace Game
 
         public async UniTask AnimateIn()
         {
-            _director.Play(_animIn, DirectorWrapMode.Hold);            
-            await UniTask.WaitUntil(0, _ => _director.state != PlayState.Playing);
+            _director.Play(_animIn, DirectorWrapMode.Hold);
+            await UniTask.WaitForSeconds((float)_director.duration);
         }
 
         private void PopulateColor(ColorType type)

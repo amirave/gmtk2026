@@ -57,19 +57,18 @@ public class Level
         return buttonList[buttonIndex];
     }
 
-    public async Task<Tuple<bool, RuleButton>> Success()
+    public bool Success()
     {
         _successes++;
         Debug.Log($"Success {_successes}/{successPerLevel} of Round #{levelNumber}");
             
-        if (_successes < successPerLevel) return new Tuple<bool, RuleButton>(false, null);
+        if (_successes < successPerLevel) return false;
 
         _successes = 0;
         var previousLevel = levelNumber;
         levelNumber = Math.Min(levelNumber + 1, maxLevelNumber);
 
-        var button = await WinLevel();
-        return new Tuple<bool, RuleButton>(previousLevel < levelNumber, button);
+        return previousLevel < levelNumber;
     }
         
     public async Task<Tuple<bool, LoseButton>> Fail()

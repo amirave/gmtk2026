@@ -2,9 +2,10 @@ using System;
 using Game;
 using UnityEngine;
 
-public enum RuleConcatinator
+public enum RuleMode
 {
-    None,
+    None, // Requires just the first property
+    IsNot, // Requires just the first property
     And,
     ButNot,
 }
@@ -13,11 +14,15 @@ public enum RuleConcatinator
 public class Rule
 {
     [SerializeReference] public IProperty property;
+    [SerializeField] public RuleMode mode;
+    [SerializeReference] public IProperty secondProperty;
 
     public Rule() { }
 
-    public Rule(IProperty property)
+    public Rule(IProperty first, RuleMode mode, IProperty second)
     {
-        this.property = property;
+        property = first;
+        this.mode = mode;
+        secondProperty = second;
     }
 }

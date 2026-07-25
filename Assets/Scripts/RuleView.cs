@@ -18,18 +18,37 @@ namespace Game
         private int _id;
         public int Id => _id;
 
+        private const string LARGE_FORMAT =
+            "<voffset=-0.15em><size=150%>{0}</size></voffset>";
+
         public void Populate(int id, Rule rule)
         {
             _id = id;
-            switch (rule.property)
+            var content = rule.mode == RuleMode.IsNot ? "Shape is not " : "Shape is ";
+
+            content += GetPropertyString(rule.property);
+
+            if (rule.mode == RuleMode.And)
+            {
+                content += " <br> AND is " + GetPropertyString(rule.secondProperty);
+            }
+            
+            _text.text = content;
+        }
+
+        public string GetPropertyString(IProperty property)
+        {
+            switch (property)
             {
                 case ColorProperty cp:
-                    PopulateColor(cp.ColorType);
-                    break;
+                    return PopulateColor(cp.ColorType);
                 case ShapeProperty sp:
-                    PopulateShape(sp.shape);
-                    break;
+                    return PopulateShape(sp.shape);
+                case EmotionProperty sp:
+                    return PopulateEmotion(sp.emotion);
             }
+
+            return "ERROR";
         }
 
         public async UniTask AnimateIn()
@@ -38,9 +57,9 @@ namespace Game
             await UniTask.WaitForSeconds((float)_director.duration);
         }
 
-        private void PopulateColor(ColorType type)
+        private string PopulateColor(ColorType type)
         {
-            var content = "Item has <size=150%><color=#{0}>{1}</color></size>";
+            var content = string.Format(LARGE_FORMAT, "<color=#{0}>{1}</color>");
             switch (type)
             {
                 case ColorType.Red:
@@ -56,12 +75,12 @@ namespace Game
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
 
-            _text.text = content;
+            return content;
         }
 
-        private void PopulateShape(ShapeType type)
+        private string PopulateShape(ShapeType type)
         {
-            var content = "Item is <size=150%>{0}</size>";
+            var content = LARGE_FORMAT;
             switch (type)
             {
                 case ShapeType.Square:
@@ -76,7 +95,24 @@ namespace Game
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
-            _text.text = content;
+            return content;
+        }
+
+        private string PopulateEmotion(EmotionType type)
+        {
+            var content = LARGE_FORMAT;
+            switch (type)
+            {
+                case EmotionType.None:
+                    content = string.Format(content, "Dead");
+                    break;
+                case EmotionType.Happy:
+                    content = string.Format(content, "Whimsical");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+            return content;
         }
     }
 }

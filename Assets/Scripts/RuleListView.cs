@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ namespace Game
     public class RuleListView : MonoBehaviour
     {
         [SerializeField] private RuleView _ruleViewPrefab;
+        [SerializeField] private Transform _OrPrefab;
         [SerializeField] private Transform _container;
 
         private void Start()
@@ -18,6 +20,10 @@ namespace Game
 
         public async UniTask AddRuleView(int id, Rule rule, bool animate = true)
         {
+            if (_container.childCount != 0)
+            {
+                Instantiate(_OrPrefab, _container);
+            }
             var ruleView = Instantiate(_ruleViewPrefab, _container);
             ruleView.Populate(id, rule);
             if (animate)
@@ -38,10 +44,15 @@ namespace Game
 
         public void ClearRules()
         {
+            List<Transform> children = new List<Transform>();
             foreach (Transform child in _container)
             {
-                var view = child.GetComponent<RuleView>();
-                Destroy(view.gameObject);
+                children.Add(child);
+            }
+            
+            foreach (var child in children)
+            {
+                DestroyImmediate(child.gameObject);
             }
         }
     }

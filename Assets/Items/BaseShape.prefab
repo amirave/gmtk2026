@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5744282886428207148
 Transform:
   m_ObjectHideFlags: 0
@@ -236,7 +236,6 @@ MonoBehaviour:
   _composableProperties:
   - rid: 4204910136241684560
   - rid: 1712480002951610454
-  - rid: 4204910181780291660
   references:
     version: 2
     RefIds:
@@ -258,8 +257,3 @@ MonoBehaviour:
       type: {class: ShapeProperty, ns: Game, asm: Assembly-CSharp}
       data:
         shape: 1
-    - rid: 4204910181780291660
-      type: {class: ComposableHatProperty, ns: , asm: Assembly-CSharp}
-      data:
-        possibleValues: 000000000100000002000000
-        hatPlace: {fileID: 2188758609984403479}

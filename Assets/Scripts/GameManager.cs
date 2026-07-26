@@ -258,6 +258,16 @@ namespace Game
                     return (Decision.Pass, elapsed);
                 }
 
+                if (Input.touchCount > 0)
+                {
+                    Touch touch = Input.GetTouch(0);
+                    if (touch.phase == TouchPhase.Began)
+                    {
+                        bool isTopHalf = touch.position.y > Screen.height / 2f;
+                        return isTopHalf ? (Decision.Pass, elapsed) : (Decision.Smash, elapsed);
+                    }
+                }
+
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
                 elapsed += Time.deltaTime;
             }

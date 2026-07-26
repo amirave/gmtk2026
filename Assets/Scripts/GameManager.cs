@@ -42,6 +42,7 @@ namespace Game
         [SerializeField] private AudioSource _audioSecondary;
         [SerializeField] private AudioClip _audioMain;
         [SerializeField] private AudioClip _audioSmash;
+        [SerializeField] private AudioClip _audioPain;
         [SerializeField] private AudioClip _audioPass;
 
         [Header("Settings")] [SerializeField] private float _timePerRound = 2;
@@ -182,7 +183,8 @@ namespace Game
                 {
                     _directorChild.playableAsset = _animSmash;
                     _directorChild.Play();
-                    _audioSecondary.clip = _audioSmash;
+                    var isWhismiscal = item.Match(new EmotionProperty(EmotionType.Happy));
+                    _audioSecondary.clip = isWhismiscal ? _audioPain : _audioSmash;
                     _audioSecondary.Play();
                 }
                 else if (playerAction == Decision.Pass)

@@ -32,7 +32,7 @@ namespace Game
             {
                 content += " <br> AND is " + GetPropertyString(rule.secondProperty);
             }
-            
+
             _text.text = content;
         }
 
@@ -48,6 +48,8 @@ namespace Game
                     return PopulateEmotion(sp.emotion);
                 case PatternProperty pp:
                     return PopulatePattern(pp.PatternType);
+                case HatProperty hp:
+                    return PopulateHat(hp.HatType);
             }
 
             return "ERROR";
@@ -68,7 +70,7 @@ namespace Game
                     content = string.Format(content, ResourceProvider.Instance.RedColor.ToHexString(), "RED");
                     break;
                 case ColorType.Green:
-                    content = string.Format(content, ResourceProvider.Instance.GreenColor.ToHexString(), "GREEN");
+                    content = string.Format(content, "25B022", "GREEN");
                     break;
                 case ColorType.Blue:
                     content = string.Format(content, ResourceProvider.Instance.BlueColor.ToHexString(), "BLUE");
@@ -97,6 +99,7 @@ namespace Game
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
+
             return content;
         }
 
@@ -114,6 +117,7 @@ namespace Game
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
+
             return content;
         }
 
@@ -134,6 +138,28 @@ namespace Game
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
+
+            return content;
+        }
+
+        private string PopulateHat(HatType type)
+        {
+            var content = LARGE_FORMAT;
+            switch (type)
+            {
+                case HatType.Nothing:
+                    content = "wearing " + string.Format(content, "NOTHING");
+                    break;
+                case HatType.Crown:
+                    content = "wearing " + string.Format(content, "CROWN");
+                    break;
+                case HatType.BrimlessYanky:
+                    content = string.Format(content, "BRIMLESS");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+
             return content;
         }
     }

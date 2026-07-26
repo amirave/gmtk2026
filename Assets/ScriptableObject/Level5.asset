@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51753f8017b388a7e814035052eaac1e, type: 3}
+  m_Name: Level5
+  m_EditorClassIdentifier: Assembly-CSharp::Level
+  _addedRules:
+  - rid: 1712480002951610478
+  _itemPrefabs:
+  - {fileID: 6508958901882343069, guid: c73db59e1c034204c9150571b3774ed9, type: 3}
+  - {fileID: 1823644801707437398, guid: 49c1bd0ae6264ae4493f77a789b9728a, type: 3}
+  - {fileID: 499866998624878966, guid: 5b4546fcaf3e51c41aad8d639b3e795b, type: 3}
+  - {fileID: 1823644801707437398, guid: f0420a89c98af9a4f8ce2e3ca861cc45, type: 3}
+  - {fileID: 519823944217027770, guid: 19d73ae23ea8c3943a81f0638b7c5826, type: 3}
+  - {fileID: 1823644801707437398, guid: fbcd093f1a6abde40b9199b39ee4356d, type: 3}
+  _roundsPerLevel: 15
+  references:
+    version: 2
+    RefIds:
+    - rid: 1712480002951610478
+      type: {class: Rule, ns: , asm: Assembly-CSharp}
+      data:
+        property:
+          rid: 1712480050057838678
+        mode: 2
+        secondProperty:
+          rid: 1712480050057838676
+    - rid: 1712480050057838676
+      type: {class: HatProperty, ns: , asm: Assembly-CSharp}
+      data:
+        _hatType: 2
+    - rid: 1712480050057838678
+      type: {class: ColorProperty, ns: Game, asm: Assembly-CSharp}
+      data:
+        _colorType: 1

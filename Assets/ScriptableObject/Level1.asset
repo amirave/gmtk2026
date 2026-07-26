@@ -18,7 +18,7 @@ MonoBehaviour:
   - {fileID: 1823644801707437398, guid: c9b536e0c9002184f964cd2d3589fe53, type: 3}
   - {fileID: 1823644801707437398, guid: 4c6881b6ff8d57545bd5e4e2475ca0d3, type: 3}
   - {fileID: 1823644801707437398, guid: e2d5172df6d837841bf42e1be2e37fad, type: 3}
-  _roundsPerLevel: 10
+  _roundsPerLevel: 5
   references:
     version: 2
     RefIds:

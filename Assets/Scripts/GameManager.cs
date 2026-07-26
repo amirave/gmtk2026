@@ -49,6 +49,7 @@ namespace Game
 
         [Header("UI")] [Header("Win Screen")] [SerializeField]
         private PopupScreen _introScreen;
+        [SerializeField] private PopupScreen _tutorialScreen;
         [SerializeField] private NextLevelScreen _nextLevelScreen;
         [SerializeField] private PopupScreen _loseLevelScreen;
         [SerializeField] private PopupScreen _winScreen;
@@ -143,6 +144,9 @@ namespace Game
             _introScreen.gameObject.SetActive(true);
             await _introScreen.Show();
             _introScreen.gameObject.SetActive(false);
+            _tutorialScreen.gameObject.SetActive(true);
+            await _tutorialScreen.Show();
+            _tutorialScreen.gameObject.SetActive(false);
             
             _level = new Level
             {
